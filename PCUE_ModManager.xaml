@@ -11,19 +11,19 @@
         <Border BorderThickness="1"
                 BorderBrush="#FF000000"
                 VerticalAlignment="Top" Margin="265,10,285,0" Height="250">
-            <Image x:Name="modPreviewBox" HorizontalAlignment="Left" Height="250" Margin="0,0,0,0" VerticalAlignment="Top" Width="250" OpacityMask="Black"/>
+            <Image x:Name="modPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black"/>
         </Border>
 
         <Border BorderThickness="1"
                 BorderBrush="#FF000000"
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
-            <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
+            <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14"/>
         </Border>
         <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16"/>
         <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,452,0,0" VerticalAlignment="Top" Width="330" KeyDown="gameData_TextBox_OnKeyDown"/>
         <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,452,0,0" VerticalAlignment="Top" Width="22" Click="gameData_FileBrowser_Click"/>
         <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="330" KeyDown="modsFolder_TextBox_OnKeyDown"/>
         <Button x:Name="modsFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,426,0,0" VerticalAlignment="Top" Width="22" Click="modsFolder_FileBrowser_Click"/>
-        <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="463" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods}" DisplayMemberPath="Name"/>
+        <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="463" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods}" DisplayMemberPath="Name" SelectionChanged="modList_View_SelectionChanged"/>
     </Grid>
 </Window>

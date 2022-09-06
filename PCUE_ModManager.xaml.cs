@@ -96,7 +96,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             Properties.Settings.Default.Save();
         }
 
-        private void modList_View_Selected(object sender, RoutedEventArgs e)
+        private void modList_View_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             modDescription_TextBox.Text = string.Empty;
             modPreviewBox.Source = null;
