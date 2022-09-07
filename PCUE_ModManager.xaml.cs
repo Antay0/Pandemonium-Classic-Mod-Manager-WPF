@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Windows.Media.TextFormatting;
 
 namespace Pandemonium_Classic___Mod_Manager__WPF_
 {
@@ -29,6 +30,10 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         public PCUE_ModManager()
         {
             InitializeComponent();
+
+            modsFolder_TextBox.Text = Properties.Settings.Default.modsFolder;
+            gameData_TextBox.Text = Properties.Settings.Default.gameDataFolder;
+            modsFolder_Update();
         }
 
         private void modsFolder_FileBrowser_Click(object sender, RoutedEventArgs e)
@@ -111,20 +116,30 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             }
         }
 
-        /*private void modList_View_Selected(object sender, RoutedEventArgs e)
+        private void installButton_OnClick(object sender, RoutedEventArgs e)
         {
-            modDescription_TextBox.Text = string.Empty;
-            modPreviewBox.Source = null;
-            if (modList_View.SelectedIndex != -1
-                && modList_View.SelectedIndex < modList_View.Items.Count
-                && modList_View.Items.Count != 0)
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.modsFolder)
+                && !string.IsNullOrEmpty(Properties.Settings.Default.gameDataFolder))
             {
                 Mod mod = (Mod)modList_View.SelectedItem;
+                string mod_xml = mod.xmlPath;
+                if (string.IsNullOrEmpty(mod_xml))
+                {
+                    var result = System.Windows.MessageBox.Show("ERROR: string 'toInstall' is NULL or empty", "FilePathError",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-                modDescription_TextBox.Text = mod.Description;
-                modPreviewBox.Source = mod.preview;
+                PCUEMOD_V1 installer = new(mod);
+                installer.ShowDialog();
             }
-        }*/
+            else
+            {
+                System.Windows.MessageBox.Show("Game Data or Mod folders are not declared.", "Empty Directory",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+        }
     }
 
 
@@ -136,6 +151,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     {
         public string? Name { get; set; }
         public string? Description;
+
+        public int installerVersion;
 
         public BitmapImage preview;
 
@@ -151,6 +168,10 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
             reader.ReadToFollowing("mod");
             Name = reader.GetAttribute("name");
+
+            string? iv = reader.GetAttribute("installerversion");
+            if (!string.IsNullOrEmpty(iv))
+                installerVersion = int.Parse(iv);
 
             reader.ReadToDescendant("description");
             Description = reader.ReadElementContentAsString();

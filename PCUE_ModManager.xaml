@@ -19,7 +19,7 @@
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
             <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14"/>
         </Border>
-        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16"/>
+        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="installButton_OnClick"/>
         <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,452,0,0" VerticalAlignment="Top" Width="330" KeyDown="gameData_TextBox_OnKeyDown"/>
         <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,452,0,0" VerticalAlignment="Top" Width="22" Click="gameData_FileBrowser_Click"/>
         <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="330" KeyDown="modsFolder_TextBox_OnKeyDown"/>
