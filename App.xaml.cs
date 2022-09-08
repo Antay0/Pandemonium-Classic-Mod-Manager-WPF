@@ -13,5 +13,9 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            //PCUE_ModManager.instance.database.dbConnection.Dispose();
+        }
     }
 }

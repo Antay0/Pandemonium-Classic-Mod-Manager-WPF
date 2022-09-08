@@ -21,6 +21,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     public partial class PCUEMOD_V1 : Window
     {
         public Mod Mod;
+        public bool installed;
 
         XDocument doc;
         XElement[] installSteps;
