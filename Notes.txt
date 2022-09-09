@@ -1,1 +1,4 @@
 	- Option to grab mods from the mega.
+		]Mega api
+
+	- Create 'loading' popup window.

@@ -14,31 +14,32 @@
         <Border BorderThickness="1.5"
                 BorderBrush="#FFA8784D"
                 VerticalAlignment="Top" Margin="10,10,200,0" Height="250">
-            <Image x:Name="optionPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black"/>
+            <Image x:Name="optionPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black" RenderOptions.BitmapScalingMode="Fant"/>
         </Border>
 
         <Border BorderThickness="1.5"
                 BorderBrush="#FFA8784D"
                 VerticalAlignment="Top" Margin="10,265,200,0" Height="109">
-            <TextBlock x:Name="optionDescription_TextBox" HorizontalAlignment="Center" Height="108" TextWrapping="Wrap" VerticalAlignment="Center" Width="290" FontSize="14"/>
+            <TextBlock x:Name="optionDescription_TextBox" HorizontalAlignment="Center" Height="108" TextWrapping="Wrap" VerticalAlignment="Center" Width="290" FontSize="14" Padding="10, 10, 10, 10"/>
         </Border>
-        <Button x:Name="nextButton" Content="Next" HorizontalAlignment="Left" Height="40" Margin="305,334,0,0" VerticalAlignment="Top" Width="185" FontSize="20" Click="nextButton_Click" Background="#FF3B2716" Foreground="White" BorderBrush="#FFA8784D" BorderThickness="1.5"/>
+        <Button x:Name="nextButton" Content="Next" HorizontalAlignment="Left" Height="40" Margin="305,334,0,0" VerticalAlignment="Top" Width="185" FontSize="20" Click="NextButton_Click" 
+                Background="#FF3B2716" Foreground="White" BorderBrush="#FFA8784D" BorderThickness="1.5"/>
         
         <ListBox x:Name="optionCheckList" HorizontalAlignment="Left" Height="281" Margin="305,48,0,0" VerticalAlignment="Top" Width="185" 
-                 ItemsSource="{Binding optionList}" SelectionChanged="optionCheckList_SelectionChanged"
+                 ItemsSource="{Binding OptionList}" SelectionChanged="OptionCheckList_SelectionChanged"
                  IsEnabled="True" Visibility="Visible" Background="#FF3B2716" BorderBrush="#FFA8784D" Foreground="White" BorderThickness="1.5">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox IsChecked="{Binding isChecked, Mode=OneWayToSource}" Content="{Binding Name}" Foreground="White"/>
+                    <CheckBox IsChecked="{Binding IsChecked, Mode=OneWayToSource}" Content="{Binding Name}" Foreground="White"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <ListBox x:Name="optionRadioList" HorizontalAlignment="Left" Height="281" Margin="305,48,0,0" VerticalAlignment="Top" Width="185" 
-                 ItemsSource="{Binding optionList}" SelectionChanged="optionRadioList_SelectionChanged"
+                 ItemsSource="{Binding OptionList}" SelectionChanged="OptionRadioList_SelectionChanged"
                  IsEnabled="False" Visibility="Hidden" BorderBrush="#FFA8784D" Background="#FF3B2716" Foreground="White">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <RadioButton IsChecked="{Binding isChecked, Mode=OneWayToSource}" Content="{Binding Name}" GroupName="options" Foreground="White"/>
+                    <RadioButton IsChecked="{Binding IsChecked, Mode=OneWayToSource}" Content="{Binding Name}" GroupName="options" Foreground="White"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

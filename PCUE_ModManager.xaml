@@ -1,5 +1,6 @@
 ﻿<Window x:Name="modManager" x:Class="Pandemonium_Classic___Mod_Manager__WPF_.PCUE_ModManager"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:p="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_.Properties"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,12 +9,12 @@
         Title="Pandemonium Classic  - ModManager WPF V1.0.0" Height="500" Width="800" Icon="/Icon.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716">
     <Window.Resources>
-        <Style x:Key="MyWaterMarkStyle" TargetType="{x:Type TextBox}">
+        <Style x:Key="WaterMarkStyle" TargetType="{x:Type TextBox}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
                         <Grid>
-                            <Border Background="White" BorderBrush="#FF7D8683" BorderThickness="1"/>
+                            <Border Background="White" BorderBrush="#FFA8784D" BorderThickness="1"/>
                             <ScrollViewer x:Name="PART_ContentHost" Margin="5,0,0,0" VerticalAlignment="Center" />
                             <Label Margin="5,0,0,0" x:Name="WaterMarkLabel" Content="{TemplateBinding Tag}" VerticalAlignment="Center"
                                Visibility="Collapsed" Foreground="Gray" FontFamily="Arial"/>
@@ -38,19 +39,36 @@
         <Border BorderThickness="1.5"
                 BorderBrush="#A8784D"
                 VerticalAlignment="Top" Margin="265,10,285,0" Height="250">
-            <Image x:Name="modPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black"/>
+            <Image x:Name="modPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black" RenderOptions.BitmapScalingMode="Fant"/>
         </Border>
 
         <Border BorderThickness="1.5"
                 BorderBrush="#A8784D"
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
-            <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White"/>
+            <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
         </Border>
-        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="installButton_OnClick" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="330" KeyDown="gameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource MyWaterMarkStyle}" Tag="Game Data Folder"/>
-        <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,452,0,0" VerticalAlignment="Top" Width="22" Click="gameData_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="330" KeyDown="modsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource MyWaterMarkStyle}" Tag="Mod Folder"/>
-        <Button x:Name="modsFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,426,0,0" VerticalAlignment="Top" Width="22" Click="modsFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="463" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods}" DisplayMemberPath="Name" SelectionChanged="modList_View_SelectionChanged" Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White"/>
+        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="InstallButton_OnClick" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="330" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Data Folder"/>
+        <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,452,0,0" VerticalAlignment="Top" Width="22" Click="GameData_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="330" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mod Folder"/>
+        <Button x:Name="modsFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,426,0,0" VerticalAlignment="Top" Width="22" Click="ModsFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="463" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods}" SelectionChanged="ModList_View_SelectionChanged" Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}{1}">
+                                <Binding Path="Installed"/>
+                                <Binding Path="Name"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button x:Name="uninstallButton" Content="Uninstall" HorizontalAlignment="Left" Height="41" Margin="372,386,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="UninstallButton_OnClick" 
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        <CheckBox x:Name="backup_CheckBox" Content="Backup Files" HorizontalAlignment="Left" Margin="10,406,0,0" VerticalAlignment="Top" Foreground="White" Background="White"
+                  ToolTip="Backs up files as they are overwritten by mods. Enables the ability to 'uninstall' mods" IsChecked="{Binding backup, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>
