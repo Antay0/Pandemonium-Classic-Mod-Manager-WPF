@@ -173,7 +173,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     {
                         installer.Mod.Installed = "+";
                         database.Mods_SetInstalled(installer.Mod);
-                        database.Files_AddRecords(installer.Mod.Name, installer.fileList.ToArray());
+                        database.Files_AddRecords(installer.Mod.Name, installer.localFileList.ToArray());
                     }
                 }
             }
@@ -201,10 +201,10 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                         string[] fileList = database.Files_TakeRecords(mod.Name);
                         foreach (var file in fileList)
                         {
-                            int i = file.IndexOf("StreamingAssets");
-                            string localPath = file.Remove(0, i);
-                            var oldPath = System.IO.Path.Combine(Settings.Default.backupFolder, localPath);
-                            var newPath = System.IO.Path.Combine(Settings.Default.gameDataFolder, localPath);
+                            //int i = file.IndexOf("StreamingAssets");
+                            //string localPath = file.Remove(0, i);
+                            var oldPath = System.IO.Path.Combine(Settings.Default.backupFolder, file);
+                            var newPath = System.IO.Path.Combine(Settings.Default.gameDataFolder, file);
 
                             System.IO.File.Move(oldPath, newPath, true);
                         }
