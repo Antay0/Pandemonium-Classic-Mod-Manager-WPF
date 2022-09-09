@@ -27,13 +27,13 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         XElement[] installSteps;
         int stepIndex;
 
-        public ObservableCollection<InstallerOption> optionList { get; set; } = new();
+        public ObservableCollection<InstallerOption> OptionList { get; set; } = new();
 
         public List<string> fileList = new();
         public int installCount = 0;
 
-        public bool selectOne { get; set; }
-        public bool required { get; set; }
+        public bool SelectOne { get; set; }
+        public bool Required { get; set; }
 
         public PCUEMOD_V1(Mod mod)
         {
@@ -68,9 +68,9 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         {
             // Reset dialog
             CleanDialog();
-            selectOne = false;
-            required = false;
-            optionList.Clear();
+            SelectOne = false;
+            Required = false;
+            OptionList.Clear();
 
             XElement step = installSteps[index];
             XmlReader reader = step.CreateReader();
@@ -79,14 +79,14 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             installStep_Label.Content = reader.GetAttribute("name");
             reader.MoveToElement();
 
-            selectOne = reader.GetAttribute("onlyone") == "true" ? true : false;
-            required = reader.GetAttribute("required") == "true" ? true : false;
+            SelectOne = reader.GetAttribute("onlyone") == "true";
+            Required = reader.GetAttribute("required") == "true";
 
-            optionCheckList.IsEnabled = !selectOne;
-            optionCheckList.Visibility = !selectOne ? Visibility.Visible : Visibility.Hidden;
+            optionCheckList.IsEnabled = !SelectOne;
+            optionCheckList.Visibility = !SelectOne ? Visibility.Visible : Visibility.Hidden;
 
-            optionRadioList.IsEnabled = selectOne;
-            optionRadioList.Visibility = selectOne ? Visibility.Visible : Visibility.Hidden;
+            optionRadioList.IsEnabled = SelectOne;
+            optionRadioList.Visibility = SelectOne ? Visibility.Visible : Visibility.Hidden;
 
             var optionElements = step.Descendants("option").ToList();
             foreach (var element in optionElements)
@@ -99,7 +99,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 if (label != null)
                 {
                     newOption.Name = label;
-                    optionList.Add(newOption);
+                    OptionList.Add(newOption);
                 }
                 else
                 {
@@ -127,30 +127,30 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         public void CleanDialog()
         {
             installStep_Label.Content = string.Empty;
-            optionList.Clear();
+            OptionList.Clear();
             optionDescription_TextBox.Text = string.Empty;
             optionPreviewBox.Source = null;
         }
 
-        private void optionCheckList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OptionCheckList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             optionDescription_TextBox.Text = string.Empty;
             optionPreviewBox.Source = null;
 
             if (optionCheckList.SelectedIndex >= 0
                 && optionCheckList.SelectedIndex < optionCheckList.Items.Count
-                && optionList.Count != 0)
+                && OptionList.Count != 0)
                 UpdateMenu((InstallerOption)optionCheckList.SelectedItem);
         }
 
-        private void optionRadioList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OptionRadioList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             optionDescription_TextBox.Text = string.Empty;
             optionPreviewBox.Source = null;
 
             if (optionRadioList.SelectedIndex >= 0
                 && optionRadioList.SelectedIndex < optionRadioList.Items.Count
-                && optionList.Count != 0)
+                && OptionList.Count != 0)
                 UpdateMenu((InstallerOption)optionRadioList.SelectedItem);
         }
 
@@ -165,10 +165,10 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             }
         }
 
-        private void nextButton_Click(object sender, RoutedEventArgs e)
+        private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            var checkedOptions = optionList.Where(t => t.isChecked).ToList();
-            if (!required || checkedOptions.Count != 0)
+            var checkedOptions = OptionList.Where(t => t.IsChecked).ToList();
+            if (!Required || checkedOptions.Count != 0)
             {
                 // Add selected file packs to list of files to install
                 foreach (var option in checkedOptions)
@@ -204,7 +204,16 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     }
                     else
                     {
-                        string newPath = System.IO.Path.Combine(Properties.Settings.Default.gameDataFolder, file.Remove(0, i));
+                        string localPath = file.Remove(0, i);
+                        string newPath = System.IO.Path.Combine(Properties.Settings.Default.gameDataFolder, localPath);
+
+                        if (Properties.Settings.Default.backup)
+                        {
+                            string bakPath = System.IO.Path.Combine(Properties.Settings.Default.backupFolder, localPath);
+                            Directory.CreateDirectory(bakPath.Remove(bakPath.LastIndexOf("\\")));
+                            File.Copy(newPath, bakPath, false);
+                        }
+
                         Directory.CreateDirectory(newPath.Remove(newPath.LastIndexOf("\\")));
                         File.Copy(file, newPath, true);
 
@@ -212,6 +221,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     }
                 }
             }
+            installed = true;
             ExitInstaller();
         }
 
@@ -230,6 +240,6 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         public List<string> Files = new();
         public BitmapImage? Image;
 
-        public bool isChecked { get; set; }
+        public bool IsChecked { get; set; }
     }
 }

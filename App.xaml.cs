@@ -15,7 +15,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     {
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            //PCUE_ModManager.instance.database.dbConnection.Dispose();
+            PCUE_ModManager.instance.database.dbConnection.Dispose();
+            Pandemonium_Classic___Mod_Manager__WPF_.Properties.Settings.Default.Save();
         }
     }
 }

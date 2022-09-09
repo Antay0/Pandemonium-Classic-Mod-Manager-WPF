@@ -61,10 +61,10 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string backup {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool backup {
             get {
-                return ((string)(this["backup"]));
+                return ((bool)(this["backup"]));
             }
             set {
                 this["backup"] = value;

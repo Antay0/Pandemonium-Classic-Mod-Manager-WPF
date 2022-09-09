@@ -20,11 +20,14 @@ using System.Windows.Media.TextFormatting;
 using System.Data.SQLite;
 using Pandemonium_Classic___Mod_Manager__WPF_;
 using Pandemonium_Classic___Mod_Manager__WPF_.Properties;
-using DataBase;
+using SQLiteDataBase;
+using System.Drawing.Text;
+using System.ComponentModel;
+using System.Data.Entity;
+using static System.Net.WebRequestMethods;
 
 namespace Pandemonium_Classic___Mod_Manager__WPF_
 {
-    // Pandemonium_Classic___Mod_Manager__WPF_
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -36,29 +39,32 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
         public ObservableCollection<Mod> Mods { get; set; } = new();
 
-        //public PCUE_Database database;
+        public PCUE_Database database;
 
         public PCUE_ModManager()
         {
             instance = this;
             InitializeComponent();
 
+            // Initialize settings
             modsFolder_TextBox.Text = Settings.Default.modsFolder;
-            modsFolder_Update();
             gameData_TextBox.Text = Settings.Default.gameDataFolder;
 
             if (string.IsNullOrEmpty(Settings.Default.backupFolder))
             {
-                string backupDir = AppDomain.CurrentDomain.BaseDirectory + "\\backup";
-                if (!Directory.Exists(backupDir))
-                    Directory.CreateDirectory(backupDir);
-                Settings.Default.backupFolder = AppDomain.CurrentDomain.BaseDirectory + "\\backup";
+                string backupDir = AppDomain.CurrentDomain.BaseDirectory + "backup";
+                
+                Settings.Default.backupFolder = backupDir;
             }
+            if (!Directory.Exists(Settings.Default.backupFolder))
+                Directory.CreateDirectory(Settings.Default.backupFolder);
 
-            //database = new PCUE_Database();
+            database = new PCUE_Database();
+
+            ModsFolder_Update();
         }
 
-        private void modsFolder_FileBrowser_Click(object sender, RoutedEventArgs e)
+        private void ModsFolder_FileBrowser_Click(object sender, RoutedEventArgs e)
         {
             var fbd = new FolderBrowserDialog();
             {
@@ -67,12 +73,12 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     modsFolder_TextBox.Text = fbd.SelectedPath;
-                    modsFolder_Update();
+                    ModsFolder_Update();
                 }
             }
         }
 
-        private void gameData_FileBrowser_Click(object sender, RoutedEventArgs e)
+        private void GameData_FileBrowser_Click(object sender, RoutedEventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
             {
@@ -81,27 +87,26 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     gameData_TextBox.Text = fbd.SelectedPath;
-                    gameData_Update();
+                    GameData_Update();
                 }
             }
         }
 
-        private void modsFolder_TextBox_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void ModsFolder_TextBox_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Return)
-                modsFolder_Update();
+                ModsFolder_Update();
         }
 
-        private void gameData_TextBox_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void GameData_TextBox_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Return)
-                gameData_Update();
+                GameData_Update();
         }
 
-        private void modsFolder_Update()
+        private void ModsFolder_Update()
         {
             Settings.Default.modsFolder = modsFolder_TextBox.Text;
-            Settings.Default.Save();
 
             Mods.Clear();
 
@@ -117,15 +122,16 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                         Mods.Add(mod);
                 }
             }
+
+            database.Mods_UpdateRecords();
         }
 
-        private void gameData_Update()
+        private void GameData_Update()
         {
             Settings.Default.gameDataFolder = gameData_TextBox.Text;
-            Settings.Default.Save();
         }
 
-        private void modList_View_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ModList_View_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             modDescription_TextBox.Text = string.Empty;
             modPreviewBox.Source = null;
@@ -140,25 +146,35 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             }
         }
 
-        private void installButton_OnClick(object sender, RoutedEventArgs e)
+        public void Backup_CheckBox_Changed()
+        {
+            //Properties.Settings.Default.backup = (bool)backup_CheckBox.IsChecked;
+        }
+
+        private void InstallButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(Settings.Default.modsFolder)
                 && !string.IsNullOrEmpty(Settings.Default.gameDataFolder))
             {
-                Mod mod = (Mod)modList_View.SelectedItem;
-                string mod_xml = mod.xmlPath;
-                if (string.IsNullOrEmpty(mod_xml))
+                var mod = (Mod)modList_View.SelectedItem;
+                if (mod != null)
                 {
-                    var result = System.Windows.MessageBox.Show("ERROR: string 'toInstall' is NULL or empty", "FilePathError",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                    string mod_xml = mod.xmlPath;
+                    if (string.IsNullOrEmpty(mod_xml))
+                    {
+                        var result = System.Windows.MessageBox.Show("ERROR: string 'toInstall' is NULL or empty", "FilePathError",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
 
-                PCUEMOD_V1 installer = new(mod);
-                installer.ShowDialog();
-                if (installer.installed)
-                {
-
+                    PCUEMOD_V1 installer = new(mod);
+                    installer.ShowDialog();
+                    if (installer.installed)
+                    {
+                        installer.Mod.Installed = "+";
+                        database.Mods_SetInstalled(installer.Mod);
+                        database.Files_AddRecords(installer.Mod.Name, installer.fileList.ToArray());
+                    }
                 }
             }
             else
@@ -168,61 +184,96 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 return;
             }
         }
+
+        private void UninstallButton_OnClick(object sender, RoutedEventArgs e)
+        {
+
+            if (!string.IsNullOrEmpty(Settings.Default.gameDataFolder)
+                && !string.IsNullOrEmpty(Settings.Default.backupFolder))
+            {
+                var mod = (Mod)modList_View.SelectedItem;
+                if (mod != null && mod.Installed != "")
+                {
+                    var result = System.Windows.MessageBox.Show("Uninstall '" + mod.Name + "'?", "Confirmation",
+                        MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        string[] fileList = database.Files_TakeRecords(mod.Name);
+                        foreach (var file in fileList)
+                        {
+                            int i = file.IndexOf("StreamingAssets");
+                            string localPath = file.Remove(0, i);
+                            var oldPath = System.IO.Path.Combine(Settings.Default.backupFolder, localPath);
+                            var newPath = System.IO.Path.Combine(Settings.Default.gameDataFolder, localPath);
+
+                            System.IO.File.Move(oldPath, newPath, true);
+                        }
+                        mod.Installed = "";
+                        System.Windows.MessageBox.Show("Done!", "Manager Notification", MessageBoxButton.OK);
+                    }
+                }
+            }
+        }
     }
 
 
-    /// 
-    /// Mod Class
-    /// 
+    /// <summary>
+    /// Acts as a representation of a PCUEMOD
+    /// </summary>
 
     public class Mod
     {
-        public string? Name { get; set; }
+        public string Name { get; set; } = "";
         public string? Description;
 
-        public int installerVersion;
+        public string Installed { get { return _installed; } set { _installed = value; PCUE_ModManager.instance.modList_View.Items.Refresh(); } }
+        public string _installed = "";
 
-        public BitmapImage preview;
+        public int installerVersion = 0;
 
-        public string FolderPath; // Path to base folder that contains all other components of the mod.
-        public string xmlPath; // Path to mod.xml
+        public BitmapImage? preview;
 
-        public Mod(string filePath)
+        public string FolderPath = ""; // Path to base folder that contains all other components of the mod.
+        public string xmlPath = ""; // Path to mod.xml
+
+        public Mod(string? filePath)
         {
-            FolderPath = filePath.Replace("PCUEMOD\\mod.xml", "");
-            xmlPath = filePath;
+            if (filePath != null)
+            {
+                FolderPath = filePath.Replace("PCUEMOD\\mod.xml", "");
+                xmlPath = filePath;
 
-            XmlReader reader = XmlReader.Create(filePath);
+                XmlReader reader = XmlReader.Create(filePath);
 
-            reader.ReadToFollowing("mod");
-            Name = reader.GetAttribute("name");
+                reader.ReadToFollowing("mod");
 
-            string? iv = reader.GetAttribute("installerversion");
-            if (!string.IsNullOrEmpty(iv))
-                installerVersion = int.Parse(iv);
+                var tmp = reader.GetAttribute("name");
+                if (tmp != null)
+                    Name = tmp;
+                else Name = "null";
 
-            reader.ReadToDescendant("description");
-            Description = reader.ReadElementContentAsString();
+                string? iv = reader.GetAttribute("installerversion");
+                if (!string.IsNullOrEmpty(iv))
+                    installerVersion = int.Parse(iv);
 
-            var uri = new Uri(System.IO.Path.Combine(FolderPath, "PCUEMOD\\preview.png"));
-            preview = new(uri);
+                reader.ReadToDescendant("description");
+                Description = reader.ReadElementContentAsString();
+
+                var uri = new Uri(System.IO.Path.Combine(FolderPath, "PCUEMOD\\preview.png"));
+                preview = new(uri);
+            }
         }
     }
 }
 
-namespace DataBase
+namespace SQLiteDataBase
 {
-    ///
-    /// Remember App.Application_Exit() for dbConnection disposal
-    ///
-
-    /*public class PCUE_Database
+    public class PCUE_Database
     {
         public SQLiteConnection dbConnection;
         SQLiteCommand command;
         SQLiteDataReader? reader;
         string sqlCommand;
-        string dbPath = AppDomain.CurrentDomain.BaseDirectory;
         string dbFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mods.db");
 
         public PCUE_Database()
@@ -236,15 +287,15 @@ namespace DataBase
             if (CreateDbFile())
             {
                 CreateDbConnection();
-                mods_CreateTable();
-                mods_FillTable();
-                files_CreateTable();
-                files_FillTable();
+                Mods_CreateTable();
+                Mods_FillTable();
+                Files_CreateTable();
+                Files_FillTable();
             }
             else
             {
                 CreateDbConnection();
-                mods_UpdateRecords();
+                Mods_UpdateRecords();
             }
             
         }
@@ -268,30 +319,12 @@ namespace DataBase
             return strCon;
         }
 
-        public void mods_CreateTable()
-        {
-            if (!CheckIfExist("mods"))
-            {
-                sqlCommand = "CREATE TABLE mods(name TEXT, installed BOOLEAN NOT NULL CHECK (mods IN (0, 1))";
-                ExecuteQuery(sqlCommand);
-            }
-        }
-        public void files_CreateTable()
-        {
-            if (!CheckIfExist("files"))
-            {
-                sqlCommand = "CREATE TABLE files(path TEXT)";
-                ExecuteQuery(sqlCommand);
-            }
-
-        }
-
         public bool CheckIfExist(string tableName)
         {
             command.CommandText = "SELECT name FROM sqlite_master WHERE name='" + tableName + "'";
             var result = command.ExecuteScalar();
 
-            return result != null && result.ToString() == tableName ? true : false;
+            return result != null && result.ToString() == tableName;
         }
 
         public void ExecuteQuery(string sqlCommand)
@@ -306,11 +339,19 @@ namespace DataBase
             command.CommandText = "SELECT COUNT(*) FROM " + tableName;
             var result = command.ExecuteScalar();
 
-            return Convert.ToInt32(result) > 0 ? true : false;
+            return Convert.ToInt32(result) > 0;
         }
 
+        public void Mods_CreateTable()
+        {
+            if (!CheckIfExist("mods"))
+            {
+                sqlCommand = "CREATE TABLE mods(name TEXT, installed INT)";
+                ExecuteQuery(sqlCommand);
+            }
+        }
 
-        public void mods_FillTable()
+        public void Mods_FillTable()
         {
             if (!CheckIfTableContainsData("mods"))
             {
@@ -320,7 +361,7 @@ namespace DataBase
 
                 foreach (Mod mod in PCUE_ModManager.instance.Mods)
                 {
-                    sqlCommand = "INSERT INTO mods (name, installed) values ('" + mod.Name + "', 0";
+                    sqlCommand = "INSERT INTO mods(name, installed) values ('" + mod.Name + "', 0)";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     ExecuteQuery(sqlCommand);
                 }
@@ -330,50 +371,58 @@ namespace DataBase
                 command.ExecuteNonQuery();
             }
         }
-        public void files_FillTable()
+
+        public void Mods_CompareRecords()
         {
-            if (!CheckIfTableContainsData("files"))
+            var modList = PCUE_ModManager.instance.Mods;
+
+            sqlCommand = "SELECT * FROM mods WHERE installed = '1'";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
             {
-                sqlCommand = "BEGIN TRANSACTION";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
-
-                var files = Directory.GetFiles(Pandemonium_Classic___Mod_Manager__WPF.Properties.Settings.Default.backupFolder);
-
-                foreach (string file in files)
+                var mod = modList.Where(t => t.Name == (string)reader["name"]).FirstOrDefault();
+                if (mod != null)
                 {
-                    sqlCommand = "INSERT INTO files (path) values ('" + file + "')";
-                    command = new SQLiteCommand(sqlCommand, dbConnection);
-                    command.ExecuteNonQuery();
+                    mod.Installed = "+";
                 }
-
-                sqlCommand = "COMMIT";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
+                else
+                {
+                    mod = new(null)
+                    {
+                        Name = (string)reader["name"],
+                        Installed = "*"
+                    };
+                    modList.Add(mod);
+                }
             }
         }
 
-        public void mods_UpdateRecords()
+        public void Mods_UpdateRecords()
         {
+            Mods_CompareRecords();
+
             sqlCommand = "BEGIN TRANSACTION";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             command.ExecuteNonQuery();
 
             sqlCommand = "SELECT * FROM mods";
             command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
-
             reader = command.ExecuteReader();
 
-            // Delete Missing Records
+            // Delete Missing And Uninstalled Records
             while (reader.Read())
             {
                 string modName = (string)reader["name"];
-                if (PCUE_ModManager.instance.Mods.Where(t => t.Name == modName).ToArray().Count() == 0)
+                if (PCUE_ModManager.instance.Mods.Where(t => t.Name == modName).ToArray().Length == 0)
                 {
-                    sqlCommand = "DELETE FROM mods WHERE name = '" + modName + "'";
-                    command = new SQLiteCommand(sqlCommand, dbConnection);
-                    command.ExecuteNonQuery();
+                    if ((int)reader["installed"] == 0)
+                    {
+                        sqlCommand = "DELETE FROM mods WHERE name = '" + modName + "'";
+                        command = new SQLiteCommand(sqlCommand, dbConnection);
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
 
@@ -386,7 +435,7 @@ namespace DataBase
 
                 if (result == 0)
                 {
-                    sqlCommand = "INSERT INTO mods (name, installed) values ('" + mod.Name + "', 0";
+                    sqlCommand = "INSERT INTO mods (name, installed) values ('" + mod.Name + "', 0)";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
@@ -397,11 +446,95 @@ namespace DataBase
             command.ExecuteNonQuery();
         }
 
-        public void mods_SetInstalled(Mod mod)
+        public void Mods_SetInstalled(Mod mod)
         {
             sqlCommand = "UPDATE mods SET installed = 1 WHERE name = '" + mod.Name + "'";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             command.ExecuteNonQuery();
         }
-    }*/
+
+        public void Files_CreateTable()
+        {
+            if (!CheckIfExist("files"))
+            {
+                sqlCommand = "CREATE TABLE files(mod TEXT, path TEXT)";
+                ExecuteQuery(sqlCommand);
+            }
+
+        }
+
+        public void Files_FillTable()
+        {
+            if (!CheckIfTableContainsData("files"))
+            {
+                sqlCommand = "BEGIN TRANSACTION";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+
+                var files = Directory.GetFiles(Settings.Default.backupFolder);
+
+                foreach (string file in files)
+                {
+                    sqlCommand = "INSERT INTO files (mod, path) values ('none', '" + file + "')";
+                    command = new SQLiteCommand(sqlCommand, dbConnection);
+                    command.ExecuteNonQuery();
+                }
+
+                sqlCommand = "COMMIT";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void Files_AddRecords(string modName, string[] files)
+        {
+            sqlCommand = "BEGIN TRANSACTION";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+
+            foreach (string file in files)
+            {
+                sqlCommand = "INSERT INTO files (mod, path) values ('" + modName + "', '" + file + "')";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+            }
+
+            sqlCommand = "COMMIT";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Gets the files for the chosen mod and removes them from the table
+        /// </summary>
+        /// <param name="modName"></param>
+        /// <returns></returns>
+        
+        public string[] Files_TakeRecords(string modName)
+        {
+            sqlCommand = "BEGIN TRANSACTION";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+
+            sqlCommand = "SELECT * FROM files WHERE mod = '" + modName + "'";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            var reader = command.ExecuteReader();
+
+            var resultList = new List<string>();
+            while (reader.Read())
+            {
+                resultList.Add((string)reader["path"]);
+            }
+
+            sqlCommand = "DELETE FROM files WHERE mod = '" + modName + "'";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+
+            sqlCommand = "COMMIT";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+
+            return resultList.ToArray();
+        }
+    }
 }
