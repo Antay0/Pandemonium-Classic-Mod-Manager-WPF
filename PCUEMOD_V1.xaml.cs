@@ -30,6 +30,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         public ObservableCollection<InstallerOption> OptionList { get; set; } = new();
 
         public List<string> fileList = new();
+        public List<string> localFileList = new();
         public int installCount = 0;
 
         public bool SelectOne { get; set; }
@@ -211,12 +212,14 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                         {
                             string bakPath = System.IO.Path.Combine(Properties.Settings.Default.backupFolder, localPath);
                             Directory.CreateDirectory(bakPath.Remove(bakPath.LastIndexOf("\\")));
-                            File.Copy(newPath, bakPath, false);
+                            if (!File.Exists(bakPath))
+                                File.Copy(newPath, bakPath, false);
                         }
 
                         Directory.CreateDirectory(newPath.Remove(newPath.LastIndexOf("\\")));
                         File.Copy(file, newPath, true);
 
+                        localFileList.Add(localPath);
                         installCount++;
                     }
                 }
@@ -227,6 +230,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
         private void ExitInstaller()
         {
+            localFileList = localFileList.Distinct().ToList();
             MessageBox.Show(installCount + " files installed.", "PCUEMOD",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             this.Close();
