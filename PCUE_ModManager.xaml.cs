@@ -25,6 +25,8 @@ using System.Drawing.Text;
 using System.ComponentModel;
 using System.Data.Entity;
 using static System.Net.WebRequestMethods;
+using System.Runtime.Serialization.Formatters;
+using CG.Web.MegaApiClient;
 
 namespace Pandemonium_Classic___Mod_Manager__WPF_
 {
@@ -47,6 +49,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             InitializeComponent();
 
             // Initialize settings
+            backupFolder_TextBox.Text = Settings.Default.backupFolder;
             modsFolder_TextBox.Text = Settings.Default.modsFolder;
             gameData_TextBox.Text = Settings.Default.gameDataFolder;
 
@@ -62,6 +65,19 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             database = new PCUE_Database();
 
             ModsFolder_Update();
+        }
+
+        private void BackupFolder_FileBrowser_Click(object sender, RoutedEventArgs e)
+        {
+            var fbd = new FolderBrowserDialog();
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    backupFolder_TextBox.Text = fbd.SelectedPath;
+                }
+            }
         }
 
         private void ModsFolder_FileBrowser_Click(object sender, RoutedEventArgs e)
@@ -121,7 +137,18 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     if (mod.Name != null)
                         Mods.Add(mod);
                 }
+
+                /*var Archives = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories)
+                                        .Where(t => t.EndsWith(".zip") || t.EndsWith(".7z"))
+                                        .ToArray();
+
+                foreach (string archive in Archives)
+                {
+
+                }*/
             }
+
+            Mods = new (Mods.OrderByDescending(t => t.Name));
 
             database.Mods_UpdateRecords();
         }
@@ -162,7 +189,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     string mod_xml = mod.xmlPath;
                     if (string.IsNullOrEmpty(mod_xml))
                     {
-                        var result = System.Windows.MessageBox.Show("ERROR: string 'toInstall' is NULL or empty", "FilePathError",
+                        System.Windows.MessageBox.Show("ERROR: string 'toInstall' is NULL or empty", "FilePathError",
                             MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
@@ -171,8 +198,15 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     installer.ShowDialog();
                     if (installer.installed)
                     {
-                        installer.Mod.Installed = "+";
-                        database.Mods_SetInstalled(installer.Mod);
+                        mod.Installed = "+";
+
+                        bool bak = false;
+                        if (Properties.Settings.Default.backup)
+                        {
+                            mod.BackUp = true;
+                            bak = true;
+                        }
+                        database.Mods_SetInstalled(installer.Mod, true, bak);
                         database.Files_AddRecords(installer.Mod.Name, installer.localFileList.ToArray());
                     }
                 }
@@ -187,7 +221,6 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
         private void UninstallButton_OnClick(object sender, RoutedEventArgs e)
         {
-
             if (!string.IsNullOrEmpty(Settings.Default.gameDataFolder)
                 && !string.IsNullOrEmpty(Settings.Default.backupFolder))
             {
@@ -209,10 +242,16 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                             System.IO.File.Move(oldPath, newPath, true);
                         }
                         mod.Installed = "";
+                        database.Mods_SetInstalled(mod, false);
                         System.Windows.MessageBox.Show("Done!", "Manager Notification", MessageBoxButton.OK);
                     }
                 }
             }
+        }
+
+        private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModsFolder_Update();
         }
     }
 
@@ -228,6 +267,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
         public string Installed { get { return _installed; } set { _installed = value; PCUE_ModManager.instance.modList_View.Items.Refresh(); } }
         public string _installed = "";
+
+        public bool BackUp { get; set; }
 
         public int installerVersion = 0;
 
@@ -346,7 +387,7 @@ namespace SQLiteDataBase
         {
             if (!CheckIfExist("mods"))
             {
-                sqlCommand = "CREATE TABLE mods(name TEXT, installed INT)";
+                sqlCommand = "CREATE TABLE mods(name TEXT, installed INT, backup INT)";
                 ExecuteQuery(sqlCommand);
             }
         }
@@ -361,7 +402,7 @@ namespace SQLiteDataBase
 
                 foreach (Mod mod in PCUE_ModManager.instance.Mods)
                 {
-                    sqlCommand = "INSERT INTO mods(name, installed) values ('" + mod.Name + "', 0)";
+                    sqlCommand = "INSERT INTO mods(name, installed, backup) values ('" + mod.Name + "', 0, 0)";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     ExecuteQuery(sqlCommand);
                 }
@@ -386,6 +427,8 @@ namespace SQLiteDataBase
                 if (mod != null)
                 {
                     mod.Installed = "+";
+                    if ((int)reader["backup"] == 1)
+                        mod.BackUp = true;
                 }
                 else
                 {
@@ -394,6 +437,8 @@ namespace SQLiteDataBase
                         Name = (string)reader["name"],
                         Installed = "*"
                     };
+                    if ((int)reader["backup"] == 1)
+                        mod.BackUp = true;
                     modList.Add(mod);
                 }
             }
@@ -435,7 +480,7 @@ namespace SQLiteDataBase
 
                 if (result == 0)
                 {
-                    sqlCommand = "INSERT INTO mods (name, installed) values ('" + mod.Name + "', 0)";
+                    sqlCommand = "INSERT INTO mods (name, installed, backup) values ('" + mod.Name + "', 0, 0)";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
@@ -446,9 +491,37 @@ namespace SQLiteDataBase
             command.ExecuteNonQuery();
         }
 
-        public void Mods_SetInstalled(Mod mod)
+        public void Mods_SetInstalled(Mod mod, bool installed, bool backup = false)
         {
-            sqlCommand = "UPDATE mods SET installed = 1 WHERE name = '" + mod.Name + "'";
+            sqlCommand = "BEGIN TRANSACTION";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+
+            if (installed)
+            {
+                sqlCommand = "UPDATE mods SET installed = 1 WHERE name = '" + mod.Name + "'";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+                if (backup)
+                {
+                    sqlCommand = "UPDATE mods SET backup = 1 WHERE name = '" + mod.Name + "'";
+                    command = new SQLiteCommand(sqlCommand, dbConnection);
+                    command.ExecuteNonQuery();
+                }
+            }
+            else if (!installed)
+            {
+                sqlCommand = "UPDATE mods SET installed = 0 WHERE name = '" + mod.Name + "'";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+
+                sqlCommand = "UPDATE mods SET backup = 0 WHERE name = '" + mod.Name + "'";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+            }
+            
+
+            sqlCommand = "COMMIT";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             command.ExecuteNonQuery();
         }

@@ -223,8 +223,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                         installCount++;
                     }
                 }
+                installed = true;
             }
-            installed = true;
             ExitInstaller();
         }
 

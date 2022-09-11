@@ -5,11 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_"
         mc:Ignorable="d"
-        Title="Working..." Height="120" Width="400" Background="#FF3B2716" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Icon="/Icon.ico">
+        Title="Working..." Height="200" Width="300" Background="#FF3B2716" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Icon="/Icon.ico">
     <Grid>
-        <ProgressBar HorizontalAlignment="Center" Height="30" VerticalAlignment="Top" Width="380" Margin="0,64,0,0" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="#FFA8784D"/>
-        <Border Margin="10,10,10,45" BorderBrush="#FFA8784D" BorderThickness="1.5">
-            <Label Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20"/>
+        <Border Margin="10,135,10,10" BorderBrush="#FFA8784D" BorderThickness="1.5">
+            <Label Content="Please Wait..." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20"/>
         </Border>
 
     </Grid>

@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_"
         mc:Ignorable="d"
-        Title="Pandemonium Classic  - ModManager WPF V1.0.0" Height="500" Width="800" Icon="/Icon.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Title="Pandemonium Classic  - Mod Manager WPF V1.0.1" Height="500" Width="800" Icon="/Icon.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716">
     <Window.Resources>
         <Style x:Key="WaterMarkStyle" TargetType="{x:Type TextBox}">
@@ -34,6 +34,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
     </Window.Resources>
     <Grid HorizontalAlignment="Center" Height="483" VerticalAlignment="Top" Width="800" Grid.IsSharedSizeScope="True">
         <Border BorderThickness="1.5"
@@ -47,7 +48,19 @@
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
             <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
         </Border>
-        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="InstallButton_OnClick" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="InstallButton_OnClick" 
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White">
+            <Button.Style>
+                <Style>
+                    <Setter Property="TextBlock.IsEnabled" Value="True"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=modList_View}" Value="-1">
+                            <Setter Property="TextBlock.IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="330" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Data Folder"/>
         <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,452,0,0" VerticalAlignment="Top" Width="22" Click="GameData_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
         <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="330" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mod Folder"/>
@@ -67,8 +80,36 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <Button x:Name="uninstallButton" Content="Uninstall" HorizontalAlignment="Left" Height="41" Margin="372,386,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="UninstallButton_OnClick" 
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <CheckBox x:Name="backup_CheckBox" Content="Backup Files" HorizontalAlignment="Left" Margin="10,406,0,0" VerticalAlignment="Top" Foreground="White" Background="White"
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White">
+            <Button.Style>
+                <Style>
+                    <Setter Property="TextBlock.IsEnabled" Value="False"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedItem.BackUp, ElementName=modList_View}" Value="True">
+                            <Setter Property="TextBlock.IsEnabled" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <CheckBox x:Name="backup_CheckBox" Content="Backup Files" HorizontalAlignment="Left" Margin="10,380,0,0" VerticalAlignment="Top" Foreground="White" Background="White"
                   ToolTip="Backs up files as they are overwritten by mods. Enables the ability to 'uninstall' mods" IsChecked="{Binding backup, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox x:Name="backupFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,400,0,0" VerticalAlignment="Top" Width="330" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Backup Folder"/>
+        <Button x:Name="backupFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,400,0,0" VerticalAlignment="Top" Width="22" Click="BackupFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        <Button x:Name="refreshButton" Content="Refresh Mod List" HorizontalAlignment="Left" Height="41" Margin="372,340,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="RefreshButton_OnClick" 
+            BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White">
+            <Button.Style>
+                <Style>
+                    <Setter Property="TextBlock.IsEnabled" Value="True"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Items.Count, ElementName=modList_View}" Value="0">
+                            <DataTrigger.Setters>
+                                <Setter Property="TextBlock.IsEnabled" Value="False"/>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>
