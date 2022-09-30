@@ -14,5 +14,14 @@
     <Setting Name="backup" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="downloadFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="extractionFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="megaURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://mega.nz/folder/ryQzyDjZ#KG_QiloVmcEdIWtJ6IuIqw</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

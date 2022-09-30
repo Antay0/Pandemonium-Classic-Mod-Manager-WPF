@@ -70,5 +70,41 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_.Properties {
                 this["backup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string downloadFolder {
+            get {
+                return ((string)(this["downloadFolder"]));
+            }
+            set {
+                this["downloadFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string extractionFolder {
+            get {
+                return ((string)(this["extractionFolder"]));
+            }
+            set {
+                this["extractionFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mega.nz/folder/ryQzyDjZ#KG_QiloVmcEdIWtJ6IuIqw")]
+        public string megaURL {
+            get {
+                return ((string)(this["megaURL"]));
+            }
+            set {
+                this["megaURL"] = value;
+            }
+        }
     }
 }

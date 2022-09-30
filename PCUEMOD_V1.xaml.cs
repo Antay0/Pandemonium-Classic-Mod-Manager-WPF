@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 
 namespace Pandemonium_Classic___Mod_Manager__WPF_
 {
@@ -22,6 +23,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     {
         public Mod Mod;
         public bool installed;
+
+        public bool showWindow;
 
         XDocument doc;
         XElement[] installSteps;
@@ -54,9 +57,15 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             stepIndex = 0;
 
             if (installSteps.Length != 0)
+            {
                 RunInstallStep(0);
+                showWindow = true;
+            }
             else
+            {
                 nextButton.Content = "Finish";
+                showWindow = false;
+            }
         }
 
         public void GetMainPackage(XElement element)
@@ -186,9 +195,9 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-        private void InstallFiles()
+        public void InstallFiles()
         {
-            var msgResult = MessageBox.Show("Install " + fileList.Count + " files?", "Confirmation",
+            var msgResult = MessageBox.Show("Install " + fileList.Count + " files?", Mod.Name,
                         MessageBoxButton.OKCancel, MessageBoxImage.Question);
             if (msgResult == MessageBoxResult.OK)
             {

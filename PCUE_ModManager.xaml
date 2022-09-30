@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_"
         mc:Ignorable="d"
-        Title="Pandemonium Classic  - Mod Manager WPF V1.0.1" Height="500" Width="800" Icon="/Icon.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Title="Pandemonium Classic  - Mod Manager WPF V*.*.*" Height="500" Width="800" Icon="/Icon.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716">
     <Window.Resources>
         <Style x:Key="WaterMarkStyle" TargetType="{x:Type TextBox}">
@@ -34,82 +34,122 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
     </Window.Resources>
-    <Grid HorizontalAlignment="Center" Height="483" VerticalAlignment="Top" Width="800" Grid.IsSharedSizeScope="True">
-        <Border BorderThickness="1.5"
+    <Grid x:Name="domain">
+
+
+        <!-- Main Page -->
+        <Grid x:Name="MainPage" Grid.IsSharedSizeScope="True" Visibility="Visible" IsEnabled="True">
+            <Border BorderThickness="1.5"
                 BorderBrush="#A8784D"
                 VerticalAlignment="Top" Margin="265,10,285,0" Height="250">
-            <Image x:Name="modPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black" RenderOptions.BitmapScalingMode="Fant"/>
-        </Border>
+                <Image x:Name="modPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black" RenderOptions.BitmapScalingMode="Fant"/>
+            </Border>
 
-        <Border BorderThickness="1.5"
+            <Border BorderThickness="1.5"
                 BorderBrush="#A8784D"
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
-            <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
-        </Border>
-        <Button x:Name="installButton" Content="Install" HorizontalAlignment="Left" Height="41" Margin="372,432,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="InstallButton_OnClick" 
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White">
-            <Button.Style>
-                <Style>
-                    <Setter Property="TextBlock.IsEnabled" Value="True"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=modList_View}" Value="-1">
-                            <Setter Property="TextBlock.IsEnabled" Value="False"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="330" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Data Folder"/>
-        <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,452,0,0" VerticalAlignment="Top" Width="22" Click="GameData_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="330" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mod Folder"/>
-        <Button x:Name="modsFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,426,0,0" VerticalAlignment="Top" Width="22" Click="ModsFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="463" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods}" SelectionChanged="ModList_View_SelectionChanged" Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0}{1}">
-                                <Binding Path="Installed"/>
-                                <Binding Path="Name"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button x:Name="uninstallButton" Content="Uninstall" HorizontalAlignment="Left" Height="41" Margin="372,386,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="UninstallButton_OnClick" 
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White">
-            <Button.Style>
-                <Style>
-                    <Setter Property="TextBlock.IsEnabled" Value="False"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedItem.BackUp, ElementName=modList_View}" Value="True">
-                            <Setter Property="TextBlock.IsEnabled" Value="True"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <CheckBox x:Name="backup_CheckBox" Content="Backup Files" HorizontalAlignment="Left" Margin="10,380,0,0" VerticalAlignment="Top" Foreground="White" Background="White"
+                <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
+            </Border>
+            <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="348" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Data Folder"/>
+            <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="22" Margin="363,452,0,0" VerticalAlignment="Top" Width="22" Click="GameData_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="348" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mod Folder"/>
+            <Button x:Name="modsFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="363,426,0,0" VerticalAlignment="Top" Width="22" Click="ModsFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="464" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectionMode="Extended" SelectionChanged="ModList_View_SelectionChanged" Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}{1}">
+                                    <Binding Path="Installed"/>
+                                    <Binding Path="Name"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <CheckBox x:Name="backup_CheckBox" Content="Backup Files" HorizontalAlignment="Left" Margin="10,380,0,0" VerticalAlignment="Top" Foreground="White" Background="White"
                   ToolTip="Backs up files as they are overwritten by mods. Enables the ability to 'uninstall' mods" IsChecked="{Binding backup, Mode=TwoWay, Source={x:Static p:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox x:Name="backupFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,400,0,0" VerticalAlignment="Top" Width="330" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Backup Folder"/>
-        <Button x:Name="backupFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="345,400,0,0" VerticalAlignment="Top" Width="22" Click="BackupFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-        <Button x:Name="refreshButton" Content="Refresh Mod List" HorizontalAlignment="Left" Height="41" Margin="372,340,0,0" VerticalAlignment="Top" Width="143" FontSize="16" Click="RefreshButton_OnClick" 
-            BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White">
-            <Button.Style>
-                <Style>
-                    <Setter Property="TextBlock.IsEnabled" Value="True"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Items.Count, ElementName=modList_View}" Value="0">
-                            <DataTrigger.Setters>
-                                <Setter Property="TextBlock.IsEnabled" Value="False"/>
-                            </DataTrigger.Setters>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
+            <TextBox x:Name="backupFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,400,0,0" VerticalAlignment="Top" Width="348" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Backup Folder"/>
+            <Button x:Name="backupFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="363,400,0,0" VerticalAlignment="Top" Width="22" Click="BackupFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+
+            <!-- Download Button -->
+            <Button x:Name="download_Button" Content="Download Mods" HorizontalAlignment="Left" Height="29" Margin="390,265,0,0" VerticalAlignment="Top" Width="125" FontSize="16" Click="RefreshButton_OnClick" 
+            BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" ToolTip="Opens the mod downloader page" Visibility="Hidden" IsEnabled="False"/>
+
+            <DockPanel x:Name="buttonPanel" HorizontalAlignment="Left" Height="209" Margin="390,265,0,0" VerticalAlignment="Top" Width="125" LastChildFill="False" UseLayoutRounding="False">
+                <Button x:Name="installButton" Content="Install" FontSize="16" Click="InstallButton_OnClick" Padding="3"
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0">
+                    <Button.Style>
+                        <Style>
+                            <Setter Property="UIElement.IsEnabled" Value="True"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedIndex, ElementName=modList_View}" Value="-1">
+                                    <Setter Property="UIElement.IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="uninstallButton" Content="Uninstall" FontSize="16" Click="UninstallButton_OnClick" Padding="3"
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0">
+                    <Button.Style>
+                        <Style>
+                            <Setter Property="UIElement.IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedItem.BackUp, ElementName=modList_View}" Value="True">
+                                    <Setter Property="UIElement.IsEnabled" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="uninstallAllButton" Content="Uninstall All" FontSize="16" Click="uninstallAllButton_Click" Padding="3"
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0"/>
+                <Button x:Name="refreshButton" Content="Refresh Mod List" FontSize="16" Click="RefreshButton_OnClick" Padding="3"
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0"/>
+            </DockPanel>
+        </Grid>
+
+
+        <!-- Download Page -->
+        <Grid x:Name="DownloaderPage" Visibility="Hidden" IsEnabled="False">
+            <ListBox x:Name="megaList_View" Margin="477,48,10,64"
+                     Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White"
+                     ItemsSource="{Binding MegaList}"/>
+            <ListBox x:Name="downList_View" Margin="158,48,329,64"
+                     Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White"/>
+            <Button x:Name="downloadButton" Content="Download Archive" HorizontalAlignment="Left" Height="40" Margin="10,100,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <Button x:Name="extractButton" Content="Extract Archive" HorizontalAlignment="Left" Height="40" Margin="10,10,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <TextBox x:Name="downloadFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="434" 
+                     BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Download Folder"/>
+            <TextBox x:Name="extractFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,425,0,0" VerticalAlignment="Top" Width="434" 
+                     BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Extraction Folder"/>
+            <TextBox x:Name="megaURL_TextBox" HorizontalAlignment="Left" Height="22" Margin="477,425,0,0" VerticalAlignment="Top" Width="313" 
+                BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mega Folder URL"/>
+            <Button x:Name="extractFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="449,426,0,0" VerticalAlignment="Top" Width="22" 
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+
+            <Button x:Name="removeButton" Content="Remove Archive" HorizontalAlignment="Left" Height="40" Margin="10,55,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <Border BorderThickness="1.5" 
+                BorderBrush="#FFA8784D"
+                Margin="158,10,329,441">
+                <Label x:Name="downloadList_Label" Content="Downloaded" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"/>
+            </Border>
+            <Border BorderThickness="1.5" 
+                BorderBrush="#FFA8784D"
+                Margin="477,10,10,441">
+                <Label x:Name="megaList_Label" Content="Online" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"/>
+            </Border>
+            <Button x:Name="downloadFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="449,452,0,0" VerticalAlignment="Top" Width="22" 
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <Button x:Name="managerButton" Content="Mod Manager" HorizontalAlignment="Left" Height="40" Margin="10,380,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
+                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+        </Grid>
     </Grid>
 </Window>

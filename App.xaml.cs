@@ -13,9 +13,22 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     /// </summary>
     public partial class App : Application
     {
+        public static string ManagerVersion = "V1.0.3";
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            MainWindow = new PCUE_ModManager();
+            MainWindow.Title = "Pandemonium Classic - Mod Manager " + ManagerVersion;
+            MainWindow.Show();
+
+        }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            // Cull connections
             PCUE_ModManager.instance.database.dbConnection.Dispose();
+            //PCUE_ModManager.instance.mega.Logout();
+
             Pandemonium_Classic___Mod_Manager__WPF_.Properties.Settings.Default.Save();
         }
     }
