@@ -97,13 +97,13 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://mega.nz/folder/ryQzyDjZ#KG_QiloVmcEdIWtJ6IuIqw")]
-        public string megaURL {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string gameFolder {
             get {
-                return ((string)(this["megaURL"]));
+                return ((string)(this["gameFolder"]));
             }
             set {
-                this["megaURL"] = value;
+                this["gameFolder"] = value;
             }
         }
     }

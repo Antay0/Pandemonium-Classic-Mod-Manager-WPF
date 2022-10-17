@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_"
         mc:Ignorable="d"
         Title="PCUEMOD V1" Height="400" Width="500" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterOwner" Icon="/Icon.ico" Foreground="White" Background="#FF3B2716">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterOwner" Icon="/Icon.ico" Foreground="White" Background="#FF3B2716" ShowInTaskbar="False">
     <Window.Resources>
         
     </Window.Resources>

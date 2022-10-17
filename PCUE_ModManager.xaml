@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_"
         mc:Ignorable="d"
-        Title="Pandemonium Classic  - Mod Manager WPF V*.*.*" Height="500" Width="800" Icon="/Icon.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716">
+        Title="Pandemonium Classic  - Mod Manager WPF V*.*.*" Height="500" Width="800" Icon="/Icon.ico" ResizeMode="CanMinimize"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <Style x:Key="WaterMarkStyle" TargetType="{x:Type TextBox}">
             <Setter Property="Template">
@@ -52,8 +52,8 @@
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
                 <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
             </Border>
-            <TextBox x:Name="gameData_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="348" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Data Folder"/>
-            <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="22" Margin="363,452,0,0" VerticalAlignment="Top" Width="22" Click="GameData_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
+            <TextBox x:Name="gameFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="348" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Folder"/>
+            <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="22" Margin="363,452,0,0" VerticalAlignment="Top" Width="22" Click="GameFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
             <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="348" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mod Folder"/>
             <Button x:Name="modsFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="363,426,0,0" VerticalAlignment="Top" Width="22" Click="ModsFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
             <ListBox x:Name="modList_View" HorizontalAlignment="Left" Height="464" Margin="520,0,0,0" VerticalAlignment="Center" Width="270" ItemsSource="{Binding Mods, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectionMode="Extended" SelectionChanged="ModList_View_SelectionChanged" Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White">
@@ -111,45 +111,6 @@
                 <Button x:Name="refreshButton" Content="Refresh Mod List" FontSize="16" Click="RefreshButton_OnClick" Padding="3"
                     BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0"/>
             </DockPanel>
-        </Grid>
-
-
-        <!-- Download Page -->
-        <Grid x:Name="DownloaderPage" Visibility="Hidden" IsEnabled="False">
-            <ListBox x:Name="megaList_View" Margin="477,48,10,64"
-                     Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White"
-                     ItemsSource="{Binding MegaList}"/>
-            <ListBox x:Name="downList_View" Margin="158,48,329,64"
-                     Background="#FF3B2716" BorderBrush="#FFA8784D" BorderThickness="1.5" Foreground="White"/>
-            <Button x:Name="downloadButton" Content="Download Archive" HorizontalAlignment="Left" Height="40" Margin="10,100,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
-                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-            <Button x:Name="extractButton" Content="Extract Archive" HorizontalAlignment="Left" Height="40" Margin="10,10,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-            <TextBox x:Name="downloadFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="434" 
-                     BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Download Folder"/>
-            <TextBox x:Name="extractFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,425,0,0" VerticalAlignment="Top" Width="434" 
-                     BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Extraction Folder"/>
-            <TextBox x:Name="megaURL_TextBox" HorizontalAlignment="Left" Height="22" Margin="477,425,0,0" VerticalAlignment="Top" Width="313" 
-                BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mega Folder URL"/>
-            <Button x:Name="extractFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="449,426,0,0" VerticalAlignment="Top" Width="22" 
-                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-
-            <Button x:Name="removeButton" Content="Remove Archive" HorizontalAlignment="Left" Height="40" Margin="10,55,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-            <Border BorderThickness="1.5" 
-                BorderBrush="#FFA8784D"
-                Margin="158,10,329,441">
-                <Label x:Name="downloadList_Label" Content="Downloaded" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"/>
-            </Border>
-            <Border BorderThickness="1.5" 
-                BorderBrush="#FFA8784D"
-                Margin="477,10,10,441">
-                <Label x:Name="megaList_Label" Content="Online" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"/>
-            </Border>
-            <Button x:Name="downloadFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="449,452,0,0" VerticalAlignment="Top" Width="22" 
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
-            <Button x:Name="managerButton" Content="Mod Manager" HorizontalAlignment="Left" Height="40" Margin="10,380,0,0" VerticalAlignment="Top" Width="143" FontSize="16"
-                BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
         </Grid>
     </Grid>
 </Window>

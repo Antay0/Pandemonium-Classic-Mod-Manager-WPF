@@ -189,59 +189,14 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     stepIndex++;
                     RunInstallStep(stepIndex);
                 }
-                else InstallFiles();
+                else ExitInstaller();
             }
             else MessageBox.Show("This step requires at least one box to be checked!", "Required Segment",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-        public void InstallFiles()
-        {
-            var msgResult = MessageBox.Show("Install " + fileList.Count + " files?", Mod.Name,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Question);
-            if (msgResult == MessageBoxResult.OK)
-            {
-                foreach (var file in fileList)
-                {
-                    int i = file.IndexOf("StreamingAssets");
-                    if (i == -1)
-                    {
-                        // If the indicated substring isn't found, ask whether to continue or exit the installation
-                        var errMsgResult = MessageBox.Show("ERROR: substring '\\StreamingAssets' not found in file: " + file, "FilePathError",
-                            MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                        if (errMsgResult == MessageBoxResult.Cancel)
-                            return;
-                    }
-                    else
-                    {
-                        string localPath = file.Remove(0, i);
-                        string newPath = System.IO.Path.Combine(Properties.Settings.Default.gameDataFolder, localPath);
-
-                        if (Properties.Settings.Default.backup)
-                        {
-                            string bakPath = System.IO.Path.Combine(Properties.Settings.Default.backupFolder, localPath);
-                            Directory.CreateDirectory(bakPath.Remove(bakPath.LastIndexOf("\\")));
-                            if (!File.Exists(bakPath))
-                                File.Copy(newPath, bakPath, false);
-                        }
-
-                        Directory.CreateDirectory(newPath.Remove(newPath.LastIndexOf("\\")));
-                        File.Copy(file, newPath, true);
-
-                        localFileList.Add(localPath);
-                        installCount++;
-                    }
-                }
-                installed = true;
-            }
-            ExitInstaller();
-        }
-
         private void ExitInstaller()
         {
-            localFileList = localFileList.Distinct().ToList();
-            MessageBox.Show(installCount + " files installed.", "PCUEMOD",
-                MessageBoxButton.OK, MessageBoxImage.Information);
             this.Close();
         }
     }

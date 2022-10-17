@@ -1,4 +1,13 @@
-V1.0.3 ()
+V1.0.4 (10/17/2022)
+	- Added installation\uninstallation progress window (mainly for something to look at but also in case you are like me and get worried that something is broken when it's frozen for more than 2 seconds).
+	- Added a warning if the game .exe file is not found.
+	- Added mod conflict check before copying files.
+	- Shifted file management code (may have messed some stuff up...)
+	- Changed GameData text input box to GameFolder (meaning you now need to change the path to point towards the game's base directory where the .exe file is stored)
+	- Removed a couple unused APIs (freed an entire 2mb of space, you're welcome).
+	- Removed mod install/uninstall confirmation messages (let me know if you miss them).
+
+V1.0.3 (09/30/2022)
 	- Added the ability to select multiple mods to install/uninstall.
 	- Added 'Uninstall All' button.
 	- Installer menu will no longer show if the mod has no additional options.

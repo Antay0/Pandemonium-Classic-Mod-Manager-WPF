@@ -26,7 +26,6 @@ using System.ComponentModel;
 using System.Data.Entity;
 using static System.Net.WebRequestMethods;
 using System.Runtime.Serialization.Formatters;
-using CG.Web.MegaApiClient;
 using static Pandemonium_Classic___Mod_Manager__WPF_.PCUE_ModManager;
 using System.Drawing;
 
@@ -42,12 +41,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public ObservableCollection<Mod> Mods { get; set; } = new();
-        public ObservableCollection<INode> MegaList { get; set; } = new();
 
         public PCUE_Database database;
-
-        public MegaApiClient mega = new();
-        private Uri megaUri = new Uri("https://mega.nz/folder/ryQzyDjZ#KG_QiloVmcEdIWtJ6IuIqw");
 
         public PCUE_ModManager()
         {
@@ -57,10 +52,9 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             // Initialize settings
             backupFolder_TextBox.Text = Settings.Default.backupFolder;
             modsFolder_TextBox.Text = Settings.Default.modsFolder;
-            gameData_TextBox.Text = Settings.Default.gameDataFolder;
+            gameFolder_TextBox.Text = Settings.Default.gameFolder;
 
-            extractFolder_TextBox.Text = Settings.Default.extractionFolder;
-            downloadFolder_TextBox.Text = Settings.Default.downloadFolder;
+            GameFolder_Update(Settings.Default.gameFolder);
 
             if (string.IsNullOrEmpty(Settings.Default.backupFolder))
             {
@@ -70,11 +64,6 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             }
             if (!Directory.Exists(Settings.Default.backupFolder))
                 Directory.CreateDirectory(Settings.Default.backupFolder);
-
-            if (!string.IsNullOrEmpty(Settings.Default.megaURL))
-                megaUri = new Uri(Settings.Default.megaURL);
-            else
-                Settings.Default.megaURL = megaUri.AbsoluteUri;
 
             database = new PCUE_Database();
 
@@ -119,7 +108,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             }
         }
 
-        private void GameData_FileBrowser_Click(object sender, RoutedEventArgs e)
+        private void GameFolder_FileBrowser_Click(object sender, RoutedEventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
             {
@@ -127,8 +116,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    gameData_TextBox.Text = fbd.SelectedPath;
-                    GameData_Update();
+                    gameFolder_TextBox.Text = fbd.SelectedPath;
+                    GameFolder_Update(fbd.SelectedPath);
                 }
             }
         }
@@ -142,7 +131,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
         private void GameData_TextBox_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Return)
-                GameData_Update();
+                GameFolder_Update(gameFolder_TextBox.Text);
         }
 
         private void ModList_Update()
@@ -163,15 +152,6 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                     if (mod.Name != null)
                         Mods.Add(mod);
                 }
-
-                /*var Archives = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories)
-                                        .Where(t => t.EndsWith(".zip") || t.EndsWith(".7z"))
-                                        .ToArray();
-
-                foreach (string archive in Archives)
-                {
-
-                }*/
             }
 
             Mods = new (Mods.OrderByDescending(t => t.Name));
@@ -181,9 +161,16 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             modList_View.ItemsSource = Mods;
         }
 
-        private void GameData_Update()
+        private void GameFolder_Update(string folder)
         {
-            Settings.Default.gameDataFolder = gameData_TextBox.Text;
+            Settings.Default.gameFolder = folder;
+            Settings.Default.gameDataFolder = System.IO.Path.Combine(folder + "\\Pandemonium Classic - Unity Edition_Data");
+
+            if (!System.IO.File.Exists(folder + "\\Pandemonium Classic - Unity Edition.exe"))
+            {
+                System.Windows.MessageBox.Show("'Pandemonium Classic - Unity Edition.exe' not found! Make sure your game directory is set to the right path!",
+                    "Game Directory Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ModList_View_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -229,11 +216,15 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                             return;
                         }
 
-                        PCUEMOD_V1 installer = new(mod);
+                        PCUEMOD_V1 pcuemod = new(mod);
+                        Installer installer = new();
 
-                        if (installer.showWindow)
-                            installer.ShowDialog();
-                        else installer.InstallFiles();
+                        if (pcuemod.showWindow)
+                            pcuemod.ShowDialog();
+                        
+                        installer.FileList = pcuemod.fileList;
+
+                        installer.ShowDialog();
 
                         if (installer.installed)
                         {
@@ -245,15 +236,15 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                                 mod.BackUp = true;
                                 bak = true;
                             }
-                            database.Mods_SetInstalled(installer.Mod, true, bak);
-                            database.Files_AddRecords(installer.Mod.Name, installer.localFileList.ToArray());
+                            database.Mods_SetInstalled(pcuemod.Mod, true, bak);
+                            database.Files_AddRecords(pcuemod.Mod.Name, installer.LocalFileList.ToArray());
                         }
                     }
                 }
             }
             else
             {
-                System.Windows.MessageBox.Show("Game Data or Mod folders are not declared.", "Empty Directory",
+                System.Windows.MessageBox.Show("Game or Mod folders are not declared.", "Empty Directory",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -268,13 +259,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 {
                     if (mod != null && mod.Installed != "")
                     {
-                        var result = System.Windows.MessageBox.Show("Uninstall '" + mod.Name + "'?", "Confirmation",
-                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
-                        if (result == MessageBoxResult.OK)
-                        {
-                            UninstallFiles(mod);
-                            System.Windows.MessageBox.Show("Done!", "Manager Notification", MessageBoxButton.OK);
-                        }
+                        Installer installer = new() { uninstall = true, _mod = mod };
+                        installer.ShowDialog();
                     }
                 }
             }
@@ -286,15 +272,6 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             ModList_Update();
         }
 
-        //
-        // Download page //
-        //
-
-        private void GetMegaList()
-        {
-            MegaList = new(mega.GetNodesFromLink(megaUri));
-        }
-
         private void uninstallAllButton_Click(object sender, RoutedEventArgs e)
         {
             var result = System.Windows.MessageBox.Show("Uninstall all mods?", "Confirmation",
@@ -303,28 +280,12 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             {
                 foreach (Mod mod in Mods)
                 {
-                    UninstallFiles(mod);
+                    if (mod != null && mod.Installed != "")
+                    {
+                        Installer installer = new() { uninstall = true, _mod = mod };
+                        installer.ShowDialog();
+                    }
                 }
-            }
-            System.Windows.MessageBox.Show("Done!", "Manager Notification", MessageBoxButton.OK);
-        }
-
-        private void UninstallFiles(Mod mod)
-        {
-            if (mod != null && mod.Installed != "" && mod.BackUp)
-            {
-                string[] fileList = database.Files_TakeRecords(mod.Name);
-                foreach (var file in fileList)
-                {
-                    var oldPath = System.IO.Path.Combine(Settings.Default.backupFolder, file);
-                    var newPath = System.IO.Path.Combine(Settings.Default.gameDataFolder, file);
-
-                    System.IO.File.Move(oldPath, newPath, true);
-                }
-
-                mod.Installed = "";
-                mod.BackUp = false;
-                database.Mods_SetInstalled(mod, false);
             }
         }
     }
@@ -680,6 +641,30 @@ namespace SQLiteDataBase
             command.ExecuteNonQuery();
 
             return resultList.ToArray();
+        }
+
+        public string? Files_CheckForConflicts(string[] fileList)
+        {
+            sqlCommand = "SELECT * FROM files";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            var reader = command.ExecuteReader();
+
+            var resultList = new List<string>();
+            var resultList_Mods = new List<string>();
+            while (reader.Read())
+            {
+                resultList.Add((string)reader["path"]);
+                resultList_Mods.Add((string)reader["mod"]);
+            }
+
+            foreach (var file in fileList)
+            {
+                if (resultList.Contains(file))
+                {
+                    return resultList_Mods[resultList.IndexOf(file)];
+                }
+            }
+            return null;
         }
     }
 }

@@ -20,8 +20,8 @@
     <Setting Name="extractionFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="megaURL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://mega.nz/folder/ryQzyDjZ#KG_QiloVmcEdIWtJ6IuIqw</Value>
+    <Setting Name="gameFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
