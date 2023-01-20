@@ -1,0 +1,30 @@
+V1.0.4 (10/17/2022)
+	- Added installation\uninstallation progress window (mainly for something to look at but also in case you are like me and get worried that something is broken when it's frozen for more than 2 seconds).
+	- Added a warning if the game .exe file is not found.
+	- Added mod conflict check before copying files.
+	- Shifted file management code (may have messed some stuff up...)
+	- Changed GameData text input box to GameFolder (meaning you now need to change the path to point towards the game's base directory where the .exe file is stored)
+	- Removed a couple unused APIs (freed an entire 2mb of space, you're welcome).
+	- Removed mod install/uninstall confirmation messages (let me know if you miss them).
+
+V1.0.3 (09/30/2022)
+	- Added the ability to select multiple mods to install/uninstall.
+	- Added 'Uninstall All' button.
+	- Installer menu will no longer show if the mod has no additional options.
+	- Images are now loaded entirely into memory instead of on demand (in theory this will take up more memory space but it allows you to rename and move the mod folders with the program open).
+	- Fixed modlist view not updating on refresh.
+
+V1.0.2a(09/12/2022)
+	- Added buttons greyed out when they cannot be used.
+	- Added check for if an individual mod has been backed up. Used by Uninstall button.
+
+V1.0.1 (09/09/2022)
+	- Shifted UI color set to PC:UE style.
+	- Added watermarks to directory input boxes.
+	- Added SQLite database.
+	- Added a marker to installed mods.
+	- Added the ability to backup and uninstall mods.
+	- Fixed low quality preview images.
+
+V1.0.0 (09/07/2022)
+	- Initial Release.
