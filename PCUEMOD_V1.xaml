@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pandemonium_Classic_Mod_Manager"
         mc:Ignorable="d"
-        Title="PCUEMOD V1" Height="400" Width="500" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
+        Title="PCUEMOD v1" Height="400" Width="500" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterOwner" Icon="/Icon.ico" Foreground="White" Background="#FF3B2716">
     <Window.Resources>
         
@@ -30,7 +30,7 @@
                  IsEnabled="True" Visibility="Visible" Background="#FF3B2716" BorderBrush="#FFA8784D" Foreground="White" BorderThickness="1.5">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsChecked, Mode=OneWayToSource}" Content="{Binding Name}" Foreground="White"/>
+                    <CheckBox IsChecked="{Binding IsChecked, Mode=OneWayToSource}" Content="{Binding Name}" Foreground="White" Click="OptionCheckBox_OnClick"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -39,7 +39,7 @@
                  IsEnabled="False" Visibility="Hidden" BorderBrush="#FFA8784D" Background="#FF3B2716" Foreground="White">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <RadioButton IsChecked="{Binding IsChecked, Mode=OneWayToSource}" Content="{Binding Name}" GroupName="options" Foreground="White"/>
+                    <RadioButton IsChecked="{Binding IsChecked, Mode=OneWayToSource}" Content="{Binding Name}" GroupName="options" Foreground="White" Click="OptionRadioBox_OnClick"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

@@ -142,9 +142,6 @@ namespace Pandemonium_Classic_Mod_Manager
 
         private void OptionCheckList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            optionDescription_TextBox.Text = string.Empty;
-            optionPreviewBox.Source = null;
-
             if (optionCheckList.SelectedIndex >= 0
                 && optionCheckList.SelectedIndex < optionCheckList.Items.Count
                 && OptionList.Count != 0)
@@ -153,17 +150,45 @@ namespace Pandemonium_Classic_Mod_Manager
 
         private void OptionRadioList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            optionDescription_TextBox.Text = string.Empty;
-            optionPreviewBox.Source = null;
-
             if (optionRadioList.SelectedIndex >= 0
                 && optionRadioList.SelectedIndex < optionRadioList.Items.Count
                 && OptionList.Count != 0)
                 UpdateMenu((InstallerOption)optionRadioList.SelectedItem);
         }
 
+        private void OptionCheckBox_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                InstallerOption option = (InstallerOption)((CheckBox)e.Source).DataContext;
+                optionCheckList.SelectedIndex = optionCheckList.Items.IndexOf(option);
+                UpdateMenu(option);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void OptionRadioBox_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                InstallerOption option = (InstallerOption)((RadioButton)e.Source).DataContext;
+                optionRadioList.SelectedIndex = optionRadioList.Items.IndexOf(option);
+                UpdateMenu(option);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void UpdateMenu(InstallerOption selected)
         {
+            optionDescription_TextBox.Text = string.Empty;
+            optionPreviewBox.Source = null;
+
             if (selected != null)
             {
                 if (selected.Description != null)

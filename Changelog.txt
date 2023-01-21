@@ -1,3 +1,6 @@
+v1.0.5a (01/21/2023)
+	- Fixed clicking on mod options not updating preview.
+
 v1.0.5 (01/20/2023)
 	- Added default mods folder.
 	- Added "Start Game" button.

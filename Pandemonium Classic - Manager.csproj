@@ -38,9 +38,6 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Update="Readme Mr. Frodo.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="user.config dir.lnk">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

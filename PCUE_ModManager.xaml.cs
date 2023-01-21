@@ -155,12 +155,10 @@ namespace Pandemonium_Classic_Mod_Manager
                         Mods.Add(mod);
                 }
             }
-
             Mods = new (Mods.OrderBy(t => t.Name));
-
             database.Mods_UpdateRecords();
-
             modList_View.ItemsSource = Mods;
+            UpdatePreview();
         }
 
         private void GameFolder_Update(string folder)
@@ -177,17 +175,25 @@ namespace Pandemonium_Classic_Mod_Manager
 
         private void ModList_View_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            modDescription_TextBox.Text = string.Empty;
-            modPreviewBox.Source = null;
             if (modList_View.SelectedIndex != -1
                 && modList_View.SelectedIndex < modList_View.Items.Count
                 && modList_View.Items.Count != 0)
             {
                 Mod mod = (Mod)modList_View.SelectedItem;
+                UpdatePreview(mod);
+            }
+        }
 
+        private void UpdatePreview(Mod? mod = null)
+        {
+            modDescription_TextBox.Text = string.Empty;
+            modPreviewBox.Source = null;
+            if (mod != null)
+            {
                 modDescription_TextBox.Text = mod.Description;
                 modPreviewBox.Source = mod.previewImage;
             }
+            else modList_View.UnselectAll();
         }
 
         public void Backup_CheckBox_Changed()
@@ -245,8 +251,10 @@ namespace Pandemonium_Classic_Mod_Manager
                             database.Mods_SetInstalled(pcuemod.Mod, true, bak);
                             database.Files_AddRecords(pcuemod.Mod.Name, installer.LocalFileList.ToArray());
                         }
+                        else System.Windows.MessageBox.Show("Installation could not be completed!", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
+                UpdatePreview();
             }
             else
             {
@@ -301,9 +309,9 @@ namespace Pandemonium_Classic_Mod_Manager
             {
                 Process.Start(Settings.Default.gameFolder + "\\Pandemonium Classic - Unity Edition.exe");
             }
-            catch (Exception er)
+            catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(er.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

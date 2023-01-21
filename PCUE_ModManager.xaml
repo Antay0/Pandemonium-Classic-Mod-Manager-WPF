@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pandemonium_Classic_Mod_Manager"
         mc:Ignorable="d"
-        Title="Pandemonium Classic  - Mod Manager WPF V*.*.*" Height="500" Width="800" Icon="/Icon.ico" ResizeMode="CanMinimize"
+        Title="Pandemonium Classic  - Mod Manager v*.*.*" Height="500" Width="800" Icon="/Icon.ico" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <Style x:Key="WaterMarkStyle" TargetType="{x:Type TextBox}">
