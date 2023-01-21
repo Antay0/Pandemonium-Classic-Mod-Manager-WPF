@@ -75,10 +75,6 @@
             <TextBox x:Name="backupFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,400,0,0" VerticalAlignment="Top" Width="348" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Backup Folder"/>
             <Button x:Name="backupFolder_FileBrowser" Content="..." HorizontalAlignment="Left" Height="21" Margin="363,400,0,0" VerticalAlignment="Top" Width="22" Click="BackupFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
 
-            <!-- Download Button -->
-            <Button x:Name="download_Button" Content="Download Mods" HorizontalAlignment="Left" Height="29" Margin="390,265,0,0" VerticalAlignment="Top" Width="125" FontSize="16" Click="RefreshButton_OnClick" 
-            BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" ToolTip="Opens the mod downloader page" Visibility="Hidden" IsEnabled="False"/>
-
             <DockPanel x:Name="buttonPanel" HorizontalAlignment="Left" Height="209" Margin="390,265,0,0" VerticalAlignment="Top" Width="125" LastChildFill="False" UseLayoutRounding="False">
                 <Button x:Name="installButton" Content="Install" FontSize="16" Click="InstallButton_OnClick" Padding="3"
                     BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0">
@@ -109,6 +105,8 @@
                 <Button x:Name="uninstallAllButton" Content="Uninstall All" FontSize="16" Click="uninstallAllButton_Click" Padding="3"
                     BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0"/>
                 <Button x:Name="refreshButton" Content="Refresh Mod List" FontSize="16" Click="RefreshButton_OnClick" Padding="3"
+                    BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0"/>
+                <Button x:Name="startButton" Content="Start Game" FontSize="16" Click="startButton_Click" Padding="3"
                     BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White" DockPanel.Dock="Bottom" Margin="0,4,0,0"/>
             </DockPanel>
         </Grid>

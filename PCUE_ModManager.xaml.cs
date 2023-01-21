@@ -28,6 +28,7 @@ using static System.Net.WebRequestMethods;
 using System.Runtime.Serialization.Formatters;
 using static Pandemonium_Classic___Mod_Manager__WPF_.PCUE_ModManager;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace Pandemonium_Classic___Mod_Manager__WPF_
 {
@@ -50,20 +51,21 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             InitializeComponent();
 
             // Initialize settings
-            backupFolder_TextBox.Text = Settings.Default.backupFolder;
-            modsFolder_TextBox.Text = Settings.Default.modsFolder;
-            gameFolder_TextBox.Text = Settings.Default.gameFolder;
-
             GameFolder_Update(Settings.Default.gameFolder);
 
             if (string.IsNullOrEmpty(Settings.Default.backupFolder))
-            {
-                string backupDir = AppDomain.CurrentDomain.BaseDirectory + "backup";
-                
-                Settings.Default.backupFolder = backupDir;
-            }
+                Settings.Default.backupFolder = AppDomain.CurrentDomain.BaseDirectory + "backup";
+            if (string.IsNullOrEmpty(Settings.Default.modsFolder))
+                Settings.Default.modsFolder = AppDomain.CurrentDomain.BaseDirectory + "mods";
+
             if (!Directory.Exists(Settings.Default.backupFolder))
                 Directory.CreateDirectory(Settings.Default.backupFolder);
+            if (!Directory.Exists(Settings.Default.modsFolder))
+                Directory.CreateDirectory(Settings.Default.modsFolder);
+
+            backupFolder_TextBox.Text = Settings.Default.backupFolder;
+            modsFolder_TextBox.Text = Settings.Default.modsFolder;
+            gameFolder_TextBox.Text = Settings.Default.gameFolder;
 
             database = new PCUE_Database();
 
@@ -154,7 +156,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                 }
             }
 
-            Mods = new (Mods.OrderByDescending(t => t.Name));
+            Mods = new (Mods.OrderBy(t => t.Name));
 
             database.Mods_UpdateRecords();
 
@@ -220,7 +222,11 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                         Installer installer = new();
 
                         if (pcuemod.showWindow)
+                        {
                             pcuemod.ShowDialog();
+                            if (pcuemod.earlyExit)
+                                return;
+                        }
                         
                         installer.FileList = pcuemod.fileList;
 
@@ -286,6 +292,18 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
                         installer.ShowDialog();
                     }
                 }
+            }
+        }
+
+        private void startButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(Settings.Default.gameFolder + "\\Pandemonium Classic - Unity Edition.exe");
+            }
+            catch (Exception er)
+            {
+                System.Windows.MessageBox.Show(er.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

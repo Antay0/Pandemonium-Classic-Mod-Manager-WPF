@@ -1,3 +1,7 @@
+v1.0.5
+	- Added default mods folder.
+	- Added "Start Game" button.
+
 V1.0.4 (10/17/2022)
 	- Added installation\uninstallation progress window (mainly for something to look at but also in case you are like me and get worried that something is broken when it's frozen for more than 2 seconds).
 	- Added a warning if the game .exe file is not found.

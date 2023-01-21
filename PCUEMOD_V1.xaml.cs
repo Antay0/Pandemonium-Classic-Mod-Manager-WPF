@@ -22,9 +22,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     public partial class PCUEMOD_V1 : Window
     {
         public Mod Mod;
-        public bool installed;
-
-        public bool showWindow;
+        public bool installed, showWindow, earlyExit = true;
 
         XDocument doc;
         XElement[] installSteps;
@@ -197,6 +195,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
         private void ExitInstaller()
         {
+            earlyExit = false;
             this.Close();
         }
     }

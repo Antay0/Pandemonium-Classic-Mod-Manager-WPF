@@ -28,12 +28,8 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
 
         public Mod? _mod;
 
-        public int installedFiles;
-        public int totalFiles;
-
-        public bool installed;
-
-        public bool uninstall;
+        public int installedFiles, totalFiles;
+        public bool installed, uninstall;
 
         public Installer()
         {

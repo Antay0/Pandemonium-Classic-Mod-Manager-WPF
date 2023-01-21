@@ -13,7 +13,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
     /// </summary>
     public partial class App : Application
     {
-        public static string ManagerVersion = "V1.0.4";
+        public static string ManagerVersion = "V1.0.5";
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
