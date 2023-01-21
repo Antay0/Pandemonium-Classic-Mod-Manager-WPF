@@ -18,19 +18,19 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Windows.Media.TextFormatting;
 using System.Data.SQLite;
-using Pandemonium_Classic___Mod_Manager__WPF_;
-using Pandemonium_Classic___Mod_Manager__WPF_.Properties;
+using Pandemonium_Classic_Mod_Manager;
+using Pandemonium_Classic_Mod_Manager.Properties;
 using SQLiteDataBase;
 using System.Drawing.Text;
 using System.ComponentModel;
 using System.Data.Entity;
 using static System.Net.WebRequestMethods;
 using System.Runtime.Serialization.Formatters;
-using static Pandemonium_Classic___Mod_Manager__WPF_.PCUE_ModManager;
+using static Pandemonium_Classic_Mod_Manager.PCUE_ModManager;
 using System.Drawing;
 using System.Diagnostics;
 
-namespace Pandemonium_Classic___Mod_Manager__WPF_
+namespace Pandemonium_Classic_Mod_Manager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

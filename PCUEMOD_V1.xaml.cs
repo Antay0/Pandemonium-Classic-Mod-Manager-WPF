@@ -17,7 +17,7 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 
-namespace Pandemonium_Classic___Mod_Manager__WPF_
+namespace Pandemonium_Classic_Mod_Manager
 {
     public partial class PCUEMOD_V1 : Window
     {

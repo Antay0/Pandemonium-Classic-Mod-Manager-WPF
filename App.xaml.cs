@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Pandemonium_Classic___Mod_Manager__WPF_
+namespace Pandemonium_Classic_Mod_Manager
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -29,7 +29,7 @@ namespace Pandemonium_Classic___Mod_Manager__WPF_
             PCUE_ModManager.instance.database.dbConnection.Dispose();
             //PCUE_ModManager.instance.mega.Logout();
 
-            Pandemonium_Classic___Mod_Manager__WPF_.Properties.Settings.Default.Save();
+            Pandemonium_Classic_Mod_Manager.Properties.Settings.Default.Save();
         }
     }
 }

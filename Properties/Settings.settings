@@ -12,13 +12,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="backup" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="downloadFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="extractionFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="gameFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

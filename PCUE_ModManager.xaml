@@ -1,10 +1,10 @@
-﻿<Window x:Name="modManager" x:Class="Pandemonium_Classic___Mod_Manager__WPF_.PCUE_ModManager"
+﻿<Window x:Name="modManager" x:Class="Pandemonium_Classic_Mod_Manager.PCUE_ModManager"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:p="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_.Properties"
+        xmlns:p="clr-namespace:Pandemonium_Classic_Mod_Manager.Properties"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pandemonium_Classic___Mod_Manager__WPF_"
+        xmlns:local="clr-namespace:Pandemonium_Classic_Mod_Manager"
         mc:Ignorable="d"
         Title="Pandemonium Classic  - Mod Manager WPF V*.*.*" Height="500" Width="800" Icon="/Icon.ico" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Background="#FF3B2716" SizeToContent="WidthAndHeight">

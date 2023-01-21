@@ -1,4 +1,4 @@
-﻿using Pandemonium_Classic___Mod_Manager__WPF_.Properties;
+﻿using Pandemonium_Classic_Mod_Manager.Properties;
 using SQLiteDataBase;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml.Schema;
 
-namespace Pandemonium_Classic___Mod_Manager__WPF_
+namespace Pandemonium_Classic_Mod_Manager
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
