@@ -6,21 +6,21 @@
         xmlns:local="clr-namespace:Pandemonium_Classic_Mod_Manager"
         mc:Ignorable="d"
         Title="PCUEMOD V1" Height="400" Width="500" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterOwner" Icon="/Icon.ico" Foreground="White" Background="#FF3B2716" ShowInTaskbar="False">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterOwner" Icon="/Icon.ico" Foreground="White" Background="#FF3B2716">
     <Window.Resources>
         
     </Window.Resources>
-    <Grid>
+    <Grid Width="500" Height="384">
         <Border BorderThickness="1.5"
                 BorderBrush="#FFA8784D"
-                VerticalAlignment="Top" Margin="10,10,200,0" Height="250">
+                VerticalAlignment="Top" Margin="10,10,200,0" Height="250" Width="290" HorizontalAlignment="Left">
             <Image x:Name="optionPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black" RenderOptions.BitmapScalingMode="Fant"/>
         </Border>
 
         <Border BorderThickness="1.5"
                 BorderBrush="#FFA8784D"
                 VerticalAlignment="Top" Margin="10,265,200,0" Height="109">
-            <TextBlock x:Name="optionDescription_TextBox" HorizontalAlignment="Center" Height="108" TextWrapping="Wrap" VerticalAlignment="Center" Width="290" FontSize="14" Padding="10, 10, 10, 10"/>
+            <TextBlock x:Name="optionDescription_TextBox" HorizontalAlignment="Left" Height="108" TextWrapping="Wrap" VerticalAlignment="Top" Width="290" FontSize="14" Padding="10, 10, 10, 10"/>
         </Border>
         <Button x:Name="nextButton" Content="Next" HorizontalAlignment="Left" Height="40" Margin="305,334,0,0" VerticalAlignment="Top" Width="185" FontSize="20" Click="NextButton_Click" 
                 Background="#FF3B2716" Foreground="White" BorderBrush="#FFA8784D" BorderThickness="1.5"/>
@@ -44,9 +44,9 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-            <Border BorderThickness="1.5" 
-                BorderBrush="#FFA8784D"
-                Margin="305,10,10,341">
+        <Border BorderThickness="1.5" 
+            BorderBrush="#FFA8784D"
+            Margin="305,10,10,341" Width="185" Height="33" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Label x:Name="installStep_Label" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"/>
         </Border>
     </Grid>

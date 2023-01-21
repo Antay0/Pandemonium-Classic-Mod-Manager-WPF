@@ -40,16 +40,16 @@
 
 
         <!-- Main Page -->
-        <Grid x:Name="MainPage" Grid.IsSharedSizeScope="True" Visibility="Visible" IsEnabled="True">
+        <Grid x:Name="MainPage" Grid.IsSharedSizeScope="True" Visibility="Visible" IsEnabled="True" Height="484">
             <Border BorderThickness="1.5"
                 BorderBrush="#A8784D"
-                VerticalAlignment="Top" Margin="265,10,285,0" Height="250">
+                VerticalAlignment="Top" Margin="265,10,285,0" Height="250" HorizontalAlignment="Left" Width="250">
                 <Image x:Name="modPreviewBox" HorizontalAlignment="Center" Height="250" VerticalAlignment="Center" Width="250" OpacityMask="Black" RenderOptions.BitmapScalingMode="Fant"/>
             </Border>
 
             <Border BorderThickness="1.5"
                 BorderBrush="#A8784D"
-                VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250">
+                VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250" HorizontalAlignment="Left">
                 <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
             </Border>
             <TextBox x:Name="gameFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="348" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Folder"/>

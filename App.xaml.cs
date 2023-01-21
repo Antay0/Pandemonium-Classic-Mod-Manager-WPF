@@ -13,7 +13,7 @@ namespace Pandemonium_Classic_Mod_Manager
     /// </summary>
     public partial class App : Application
     {
-        public static string ManagerVersion = "V1.0.5";
+        public static string ManagerVersion = "v1.0.5";
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {

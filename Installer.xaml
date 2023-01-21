@@ -6,20 +6,20 @@
         xmlns:local="clr-namespace:Pandemonium_Classic_Mod_Manager"
         mc:Ignorable="d"
         Title="Working..." Height="134" Width="400" Background="#FF3B2716" ResizeMode="NoResize" Icon="/Icon.ico" Activated="OnActivated" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight">
-    <Grid>
+    <Grid Width="400" Height="118">
 
         <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" LastChildFill="False" UseLayoutRounding="False" Height="98" Width="380">
             <Border BorderThickness="1" 
                 BorderBrush="#FFA8784D"
-                DockPanel.Dock="Top" Height="30" Margin="0,0,0,4">
+                DockPanel.Dock="Top" Height="30" Margin="0,0,0,4" Width="380">
                 <Label x:Name="fileCounter" Content="0/0" HorizontalAlignment="Center" FontSize="12" Foreground="White"/>
             </Border>
             <Border BorderThickness="1" 
                 BorderBrush="#FFA8784D"
-                DockPanel.Dock="Top" Height="30" Margin="0,0,0,4">
+                DockPanel.Dock="Top" Height="30" Margin="0,0,0,4" Width="380">
                 <Label x:Name="filePathDisplay" Content="file :3" FontSize="14" Foreground="White" VerticalAlignment="Top" Margin="0,0,0,0" HorizontalAlignment="Center"/>
             </Border>
-            <ProgressBar x:Name="fileProgressBar" BorderBrush="#FFA8784D" DockPanel.Dock="Top" Height="30"/>
+            <ProgressBar x:Name="fileProgressBar" BorderBrush="#FFA8784D" DockPanel.Dock="Top" Height="30" Width="380"/>
         </DockPanel>
 
     </Grid>
