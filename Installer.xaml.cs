@@ -91,6 +91,12 @@ namespace Pandemonium_Classic_Mod_Manager
                 var localPath = LocalFileList[i];
 
                 string newPath = System.IO.Path.Combine(Settings.Default.gameDataFolder, localPath);
+                if (!File.Exists(newPath))
+                {
+                    MessageBox.Show("The image file: '" + file + "' does not exist!", "FilePathError",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
                 if (Settings.Default.backup)
                 {

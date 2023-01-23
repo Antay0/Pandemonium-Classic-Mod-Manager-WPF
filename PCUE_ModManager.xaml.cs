@@ -229,9 +229,13 @@ namespace Pandemonium_Classic_Mod_Manager
 
                         if (pcuemod.showWindow)
                         {
-                            pcuemod.ShowDialog();
-                            if (pcuemod.earlyExit)
-                                return;
+                            if (!pcuemod.error)
+                            {
+                                pcuemod.ShowDialog();
+                                if (pcuemod.earlyExit)
+                                    return;
+                            }
+                            else return;
                         }
                         
                         installer.FileList = pcuemod.fileList;

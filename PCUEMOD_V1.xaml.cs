@@ -16,16 +16,17 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Diagnostics;
 
 namespace Pandemonium_Classic_Mod_Manager
 {
     public partial class PCUEMOD_V1 : Window
     {
         public Mod Mod;
-        public bool installed, showWindow, earlyExit = true;
+        public bool installed, showWindow = true, earlyExit = true, error;
 
-        XDocument doc;
-        XElement[] installSteps;
+        XDocument? doc;
+        XElement[]? installSteps;
         int stepIndex;
 
         public ObservableCollection<InstallerOption> OptionList { get; set; } = new();
@@ -45,24 +46,34 @@ namespace Pandemonium_Classic_Mod_Manager
             this.Title = "PCUEMOD Installer V1: " + Mod.Name;
 
             // Gets the xml document in question to guide the installer
-            doc = XDocument.Load(mod.xmlPath);
-
-            var mainPackage = doc.Descendants().Elements("mainpackage").FirstOrDefault();
-            if (mainPackage != null)
-                GetMainPackage(mainPackage);
-
-            installSteps = doc.Descendants().Elements("installstep").ToArray();
-            stepIndex = 0;
-
-            if (installSteps.Length != 0)
+            try
             {
-                RunInstallStep(0);
-                showWindow = true;
+                doc = XDocument.Load(mod.xmlPath);
+
+                var mainPackage = doc.Descendants().Elements("mainpackage").FirstOrDefault();
+                if (mainPackage != null)
+                    GetMainPackage(mainPackage);
+
+                installSteps = doc.Descendants().Elements("installstep").ToArray();
+                stepIndex = 0;
+
+                if (installSteps.Length != 0)
+                {
+                    RunInstallStep(0);
+                    showWindow = true;
+                }
+                else
+                {
+                    nextButton.Content = "Finish";
+                    showWindow = false;
+                }
             }
-            else
+            catch (Exception e)
             {
-                nextButton.Content = "Finish";
-                showWindow = false;
+                System.Windows.MessageBox.Show(e.Message + " \n \n" + e.StackTrace);
+                error = true;
+                this.Close();
+                return;
             }
         }
 
@@ -80,58 +91,67 @@ namespace Pandemonium_Classic_Mod_Manager
             Required = false;
             OptionList.Clear();
 
-            XElement step = installSteps[index];
-            XmlReader reader = step.CreateReader();
 
-            reader.ReadToFollowing("installstep");
-            installStep_Label.Content = reader.GetAttribute("name");
-            reader.MoveToElement();
-
-            SelectOne = reader.GetAttribute("onlyone") == "true";
-            Required = reader.GetAttribute("required") == "true";
-
-            optionCheckList.IsEnabled = !SelectOne;
-            optionCheckList.Visibility = !SelectOne ? Visibility.Visible : Visibility.Hidden;
-
-            optionRadioList.IsEnabled = SelectOne;
-            optionRadioList.Visibility = SelectOne ? Visibility.Visible : Visibility.Hidden;
-
-            var optionElements = step.Descendants("option").ToList();
-            foreach (var element in optionElements)
+            try
             {
-                var newOption = new InstallerOption();
+                XElement step = installSteps[index];
+                XmlReader reader = step.CreateReader();
 
-                reader = element.CreateReader();
-                reader.ReadToFollowing("option");
-                string? label = reader.GetAttribute("name");
-                if (label != null)
-                {
-                    newOption.Name = label;
-                    OptionList.Add(newOption);
-                }
-                else
-                {
-                    MessageBox.Show("option name is null", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
+                reader.ReadToFollowing("installstep");
+                installStep_Label.Content = reader.GetAttribute("name");
                 reader.MoveToElement();
-                reader.ReadToDescendant("description");
-                newOption.Description = reader.ReadElementContentAsString();
 
-                // Get value from <folder> element
-                string folderPath = System.IO.Path.Combine(Mod.FolderPath, reader.ReadElementContentAsString());
-                newOption.Files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories).ToList();
+                SelectOne = reader.GetAttribute("onlyone") == "true";
+                Required = reader.GetAttribute("required") == "true";
 
-                // Get value from <image> element
-                var uri = new Uri(System.IO.Path.Combine(Mod.FolderPath, "PCUEMOD\\images", reader.ReadElementContentAsString()));
-                newOption.Image = new(uri);
+                optionCheckList.IsEnabled = !SelectOne;
+                optionCheckList.Visibility = !SelectOne ? Visibility.Visible : Visibility.Hidden;
+
+                optionRadioList.IsEnabled = SelectOne;
+                optionRadioList.Visibility = SelectOne ? Visibility.Visible : Visibility.Hidden;
+
+                var optionElements = step.Descendants("option").ToList();
+                foreach (var element in optionElements)
+                {
+                    var newOption = new InstallerOption();
+
+                    reader = element.CreateReader();
+                    reader.ReadToFollowing("option");
+                    string? label = reader.GetAttribute("name");
+                    if (label != null)
+                    {
+                        newOption.Name = label;
+                        OptionList.Add(newOption);
+                    }
+                    else
+                    {
+                        MessageBox.Show("option name is null", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    reader.MoveToElement();
+                    reader.ReadToDescendant("description");
+                    newOption.Description = reader.ReadElementContentAsString();
+
+                    // Get value from <folder> element
+                    string folderPath = System.IO.Path.Combine(Mod.FolderPath, reader.ReadElementContentAsString());
+                    newOption.Files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories).ToList();
+
+                    // Get value from <image> element
+                    var uri = new Uri(System.IO.Path.Combine(Mod.FolderPath, "PCUEMOD\\images", reader.ReadElementContentAsString()));
+                    newOption.Image = new(uri);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(e.Message + " \n \n" + e.StackTrace);
             }
 
             if (index == installSteps.Length - 1)
                 nextButton.Content = "Finish";
         }
+
         public void CleanDialog()
         {
             installStep_Label.Content = string.Empty;
