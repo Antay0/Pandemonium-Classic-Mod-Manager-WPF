@@ -1,5 +1,5 @@
 ﻿using Pandemonium_Classic_Mod_Manager.Properties;
-using SQLiteDataBase;
+using Pandemonium_Classic_Mod_Manager.SQLiteDataBase;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,19 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml.Schema;
+using Pandemonium_Classic_Mod_Manager.Utilities;
 
 namespace Pandemonium_Classic_Mod_Manager
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for PCUEMOD_V2.xaml
     /// </summary>
     public partial class Installer : Window
     {
@@ -57,24 +50,7 @@ namespace Pandemonium_Classic_Mod_Manager
         {
             PCUE_Database database = PCUE_ModManager.instance.database;
 
-            foreach (var file in FileList)
-            {
-                int i = file.IndexOf("StreamingAssets");
-                if (i == -1)
-                {
-                    // If the indicated substring isn't found, ask whether to continue or exit the installation
-                    var errMsgResult = MessageBox.Show("ERROR: substring '\\StreamingAssets' not found in file: " + file, "FilePathError",
-                        MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                    if (errMsgResult == MessageBoxResult.Cancel)
-                        return;
-                }
-                else
-                {
-                    string localPath = file.Remove(0, i);
-                    LocalFileList.Add(localPath);
-                }
-            }
-
+            LocalFileList = GeneralUtilities.GetLocalFileList(FileList);
 
             string? conflict = database.Files_CheckForConflicts(LocalFileList.ToArray());
             if (conflict != null)

@@ -22,7 +22,7 @@ namespace Pandemonium_Classic_Mod_Manager
 {
     public partial class PCUEMOD_V1 : Window
     {
-        public Mod Mod;
+        public ModV1 Mod;
         public bool installed, showWindow = true, earlyExit = true, error;
 
         XDocument? doc;
@@ -32,13 +32,12 @@ namespace Pandemonium_Classic_Mod_Manager
         public ObservableCollection<InstallerOption> OptionList { get; set; } = new();
 
         public List<string> fileList = new();
-        public List<string> localFileList = new();
         public int installCount = 0;
 
         public bool SelectOne { get; set; }
         public bool Required { get; set; }
 
-        public PCUEMOD_V1(Mod mod)
+        public PCUEMOD_V1(ModV1 mod)
         {
             Mod = mod;
             InitializeComponent();

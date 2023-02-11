@@ -52,6 +52,13 @@
                 VerticalAlignment="Top" Margin="10,10,540,0" Height="250" Width="250" HorizontalAlignment="Left">
                 <TextBlock x:Name="modDescription_TextBox" HorizontalAlignment="Center" Height="250" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" FontSize="14" Foreground="White" Padding="10, 10, 10, 10"/>
             </Border>
+
+            <Border BorderThickness="1.5" 
+            BorderBrush="#FFA8784D"
+            Margin="10,265,0,0" Width="505" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label x:Name="modAuthor_TextBox" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"/>
+            </Border>
+
             <TextBox x:Name="gameFolder_TextBox" HorizontalAlignment="Left" Height="22" Margin="10,452,0,0" VerticalAlignment="Top" Width="348" KeyDown="GameData_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Game Folder"/>
             <Button x:Name="gameData_FileBrowser" Content="..." HorizontalAlignment="Left" Height="22" Margin="363,452,0,0" VerticalAlignment="Top" Width="22" Click="GameFolder_FileBrowser_Click" BorderBrush="#FFA8784D" BorderThickness="1.5" Background="#FF3B2716" Foreground="White"/>
             <TextBox x:Name="modsFolder_TextBox" HorizontalAlignment="Left" Height="21" Margin="10,426,0,0" VerticalAlignment="Top" Width="348" KeyDown="ModsFolder_TextBox_OnKeyDown" BorderBrush="#FFA8784D" Style="{StaticResource WaterMarkStyle}" Tag="Mod Folder"/>

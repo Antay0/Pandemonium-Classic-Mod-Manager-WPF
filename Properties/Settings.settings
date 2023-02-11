@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Pandemonium_Classic___Mod_Manager__WPF_.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Pandemonium_Classic_Mod_Manager.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="modsFolder" Type="System.String" Scope="User">

@@ -18,7 +18,7 @@ namespace Pandemonium_Classic_Mod_Manager
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             MainWindow = new PCUE_ModManager();
-            MainWindow.Title = "Pandemonium Classic - Mod Manager " + ManagerVersion;
+            MainWindow.Title = "Pandemonium Classic - ModV1 Manager " + ManagerVersion;
             MainWindow.Show();
 
         }
