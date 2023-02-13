@@ -31,14 +31,14 @@ namespace Pandemonium_Classic_Mod_Manager
 
                 if (!File.Exists(xml))
                 {
-                    System.Windows.MessageBox.Show("Xml did not exist!");
+                    PCUE_ModManager.ShowError("XML did not exist!");
                     return null;
                 }
 
                 ModV2 loadedMod;
                 using (var file = new StreamReader(xml))
                 {
-                    loadedMod = (ModV2)reader.Deserialize(file);
+                    loadedMod = reader.Deserialize(file) as ModV2;
                 }
 
 
@@ -70,7 +70,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch(Exception e)
             {
-                MessageBox.Show(e.Message + "\n --------- \n" + e.StackTrace);
+                PCUE_ModManager.ShowError(e);
             }
             return null;
         }

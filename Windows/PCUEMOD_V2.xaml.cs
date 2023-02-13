@@ -123,9 +123,9 @@ namespace Pandemonium_Classic_Mod_Manager
                 optionListBox.SelectedIndex = optionListBox.Items.IndexOf(option);
                 UpdateMenu(option);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MessageBox.Show(ex.Message);
+                PCUE_ModManager.ShowError(e);
             }
         }
 

@@ -16,6 +16,7 @@ using Pandemonium_Classic_Mod_Manager;
 using Pandemonium_Classic_Mod_Manager.Properties;
 using Pandemonium_Classic_Mod_Manager.SQLiteDataBase;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Pandemonium_Classic_Mod_Manager
 {
@@ -180,7 +181,7 @@ namespace Pandemonium_Classic_Mod_Manager
             if (!System.IO.File.Exists(folder + "\\Pandemonium Classic - Unity Edition.exe"))
             {
                 System.Windows.MessageBox.Show("'Pandemonium Classic - Unity Edition.exe' not found! Make sure your game directory is set to the right path!",
-                    "Game Directory Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    "Game Directory Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -230,14 +231,12 @@ namespace Pandemonium_Classic_Mod_Manager
                             string mod_xml = ((ModV1)mod).xmlPath;
                             if (string.IsNullOrEmpty(mod_xml))
                             {
-                                System.Windows.MessageBox.Show("ERROR: string 'toInstall' is NULL or empty", "FilePathError",
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                                ShowError("String 'toInstall' is NULL or empty");
                                 return;
                             }
                             else if (!System.IO.File.Exists(mod_xml))
                             {
-                                System.Windows.MessageBox.Show("ERROR: 'mod.xml' is missing", "MissingXMLError",
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                                ShowError("'mod.xml' is missing");
                                 return;
                             }
 
@@ -341,8 +340,32 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowError(ex);
             }
+        }
+
+        public static void ShowError(Exception e, string message = "")
+        {
+            System.Windows.MessageBox.Show((message != "" ? message + "\n\n" : "") 
+                + e.Message + "\n --------- \n" + e.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        public static void ShowError(string message)
+        {
+            System.Windows.MessageBox.Show(message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        public static bool ShowErrorOKCancel(Exception e, string message = "")
+        {
+            var result =  System.Windows.MessageBox.Show((message != "" ? message + "\n\n" : "")
+                + e.Message + "\n --------- \n" + e.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            return result == MessageBoxResult.OK ? true : false;
+        }
+
+        public static bool ShowErrorOKCancel(string message)
+        {
+            var result = System.Windows.MessageBox.Show(message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            return result == MessageBoxResult.OK ? true : false;
         }
     }
 }

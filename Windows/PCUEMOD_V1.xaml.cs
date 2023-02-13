@@ -69,7 +69,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.Message + " \n \n" + e.StackTrace);
+                PCUE_ModManager.ShowError(e);
                 error = true;
                 this.Close();
                 return;
@@ -124,8 +124,7 @@ namespace Pandemonium_Classic_Mod_Manager
                     }
                     else
                     {
-                        MessageBox.Show("option name is null", "Error",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        PCUE_ModManager.ShowError("Option name is null");
                         return;
                     }
 
@@ -144,7 +143,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception e)
             {
-                System.Windows.MessageBox.Show(e.Message + " \n \n" + e.StackTrace);
+                PCUE_ModManager.ShowError(e);
             }
 
             if (index == installSteps.Length - 1)
@@ -183,9 +182,9 @@ namespace Pandemonium_Classic_Mod_Manager
                 optionCheckList.SelectedIndex = optionCheckList.Items.IndexOf(option);
                 UpdateMenu(option);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MessageBox.Show(ex.Message);
+                PCUE_ModManager.ShowError(e);
             }
         }
 
@@ -197,9 +196,9 @@ namespace Pandemonium_Classic_Mod_Manager
                 optionRadioList.SelectedIndex = optionRadioList.Items.IndexOf(option);
                 UpdateMenu(option);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MessageBox.Show(ex.Message);
+                PCUE_ModManager.ShowError(e);
             }
         }
 

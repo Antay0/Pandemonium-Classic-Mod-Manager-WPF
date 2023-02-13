@@ -44,7 +44,7 @@ namespace Pandemonium_Classic_Mod_Manager
                 }
                 catch(Exception e)
                 {
-                    MessageBox.Show(e.Message + "\n --------- \n" + e.StackTrace);
+                    PCUE_ModManager.ShowError(e);
                 }
             }
         }
