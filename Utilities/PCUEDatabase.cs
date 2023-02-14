@@ -77,6 +77,20 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             return Convert.ToInt32(result) > 0;
         }
 
+        public void StartTransaction()
+        {
+            sqlCommand = "BEGIN TRANSACTION";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+        }
+
+        public void CommitTransaction()
+        {
+            sqlCommand = "COMMIT";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+        }
+
         public void Mods_CreateTable()
         {
             if (!CheckIfExist("mods"))
@@ -90,9 +104,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             if (!CheckIfTableContainsData("mods"))
             {
-                sqlCommand = "BEGIN TRANSACTION";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
+                StartTransaction();
 
                 foreach (Mod mod in PCUE_ModManager.instance.Mods)
                 {
@@ -101,9 +113,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                     ExecuteQuery(sqlCommand);
                 }
 
-                sqlCommand = "COMMIT";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
+                CommitTransaction();
             }
         }
 
@@ -142,9 +152,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             Mods_CompareRecords();
 
-            sqlCommand = "BEGIN TRANSACTION";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            StartTransaction();
 
             sqlCommand = "SELECT * FROM mods";
             command = new SQLiteCommand(sqlCommand, dbConnection);
@@ -180,16 +188,12 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 }
             }
 
-            sqlCommand = "COMMIT";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            CommitTransaction();
         }
 
         public void Mods_SetInstalled(Mod mod, bool installed, bool backup = false)
         {
-            sqlCommand = "BEGIN TRANSACTION";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            StartTransaction();
 
             if (installed)
             {
@@ -214,10 +218,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 command.ExecuteNonQuery();
             }
 
-
-            sqlCommand = "COMMIT";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            CommitTransaction();
         }
 
         public void Files_CreateTable()
@@ -234,9 +235,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             if (!CheckIfTableContainsData("files"))
             {
-                sqlCommand = "BEGIN TRANSACTION";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
+                StartTransaction();
 
                 var files = Directory.GetFiles(Settings.Default.backupFolder);
 
@@ -247,17 +246,13 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                     command.ExecuteNonQuery();
                 }
 
-                sqlCommand = "COMMIT";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
+                CommitTransaction();
             }
         }
 
         public void Files_AddRecords(string modName, string[] files)
         {
-            sqlCommand = "BEGIN TRANSACTION";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            StartTransaction();
 
             foreach (string file in files)
             {
@@ -266,9 +261,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 command.ExecuteNonQuery();
             }
 
-            sqlCommand = "COMMIT";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            CommitTransaction();
         }
 
         /// <summary>
@@ -279,9 +272,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
 
         public string[] Files_TakeRecords(string modName)
         {
-            sqlCommand = "BEGIN TRANSACTION";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            StartTransaction();
 
             sqlCommand = "SELECT * FROM files WHERE mod = '" + modName + "'";
             command = new SQLiteCommand(sqlCommand, dbConnection);
@@ -297,9 +288,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             command = new SQLiteCommand(sqlCommand, dbConnection);
             command.ExecuteNonQuery();
 
-            sqlCommand = "COMMIT";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            CommitTransaction();
 
             return resultList.ToArray();
         }
