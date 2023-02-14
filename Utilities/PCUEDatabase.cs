@@ -95,8 +95,12 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             if (!CheckIfExist("mods"))
             {
+                StartTransaction();
+
                 sqlCommand = "CREATE TABLE mods(name TEXT, installed INT, backup INT)";
                 ExecuteQuery(sqlCommand);
+
+                CommitTransaction();
             }
         }
 
@@ -225,10 +229,13 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             if (!CheckIfExist("files"))
             {
+                StartTransaction();
+
                 sqlCommand = "CREATE TABLE files(mod TEXT, path TEXT)";
                 ExecuteQuery(sqlCommand);
-            }
 
+                CommitTransaction();
+            }
         }
 
         public void Files_FillTable()
@@ -254,8 +261,28 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             StartTransaction();
 
+            List<string> records = new();
+            for (int i = 0; i < files.Length; i++)
+            {
+                sqlCommand = "SELECT * FROM files WHERE path = '" + files[i] + "'";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    records.Add((string)reader["path"]);
+                }
+            }
+
             foreach (string file in files)
             {
+                if (records.Contains(file))
+                {
+                    sqlCommand = "DELETE FROM files WHERE path = '" + file + "'";
+                    command = new SQLiteCommand(sqlCommand, dbConnection);
+                    command.ExecuteNonQuery();
+                }
+
                 sqlCommand = "INSERT INTO files (mod, path) values ('" + modName + "', '" + file + "')";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 command.ExecuteNonQuery();
