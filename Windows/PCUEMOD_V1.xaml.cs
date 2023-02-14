@@ -32,7 +32,6 @@ namespace Pandemonium_Classic_Mod_Manager
         public ObservableCollection<InstallerOption> OptionList { get; set; } = new();
 
         public List<string> fileList = new();
-        public int installCount = 0;
 
         public bool SelectOne { get; set; }
         public bool Required { get; set; }
@@ -182,9 +181,9 @@ namespace Pandemonium_Classic_Mod_Manager
                 optionCheckList.SelectedIndex = optionCheckList.Items.IndexOf(option);
                 UpdateMenu(option);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUE_ModManager.ShowError(ex);
             }
         }
 
@@ -196,9 +195,9 @@ namespace Pandemonium_Classic_Mod_Manager
                 optionRadioList.SelectedIndex = optionRadioList.Items.IndexOf(option);
                 UpdateMenu(option);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUE_ModManager.ShowError(ex);
             }
         }
 

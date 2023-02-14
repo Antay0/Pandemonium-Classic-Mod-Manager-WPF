@@ -1,3 +1,10 @@
+v1.1.0 ()
+	- Added text modding.
+	- Switched to PCUEMOD_V2 (modV2.xml). Old mods still work.
+	- Conflicting files now overwrite old records in the sql database (this should make it so that it won't try and uninstall the same file from two different mods).
+	- Now show's mod author (PCUEMOD_V2 only) (About ph***in' time!).
+	- Changed error displays.
+
 v1.0.5a (01/21/2023)
 	- Fixed clicking on mod options not updating preview.
 

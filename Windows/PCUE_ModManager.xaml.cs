@@ -31,6 +31,8 @@ namespace Pandemonium_Classic_Mod_Manager
 
         public ObservableCollection<Mod> Mods { get; set; } = new();
 
+        public Dictionary<string, string> ModdedStrings = new();
+
         public PCUE_Database database;
 
         public PCUE_ModManager()
@@ -210,11 +212,6 @@ namespace Pandemonium_Classic_Mod_Manager
             else modList_View.UnselectAll();
         }
 
-        public void Backup_CheckBox_Changed()
-        {
-            //Properties.Settings.Default.backup = (bool)backup_CheckBox.IsChecked;
-        }
-
         private void InstallButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(Settings.Default.modsFolder)
@@ -225,6 +222,7 @@ namespace Pandemonium_Classic_Mod_Manager
                     if (mod != null)
                     {
                         List<string> fileList = new();
+                        Dictionary<string, string> stringList = new();
 
                         if (mod is ModV1) // =========== PCUEMOD_V1
                         {
@@ -268,6 +266,7 @@ namespace Pandemonium_Classic_Mod_Manager
                                 else return;
                             }
                             fileList = pcuemod.fileList;
+                            stringList = pcuemod.stringList;
                         }
                         Installer installer = new();
                         installer.FileList = fileList;
@@ -277,12 +276,21 @@ namespace Pandemonium_Classic_Mod_Manager
                             mod.Installed = "+";
                             mod.BackUp = Settings.Default.backup;
 
+                            foreach (var text in stringList)
+                            {
+                                if (!ModdedStrings.Any(it => it.Key == text.Key))
+                                    ModdedStrings.Add(text.Key, text.Value);
+                                else
+                                    ModdedStrings[text.Key] = text.Value;
+                            }
                             database.Mods_SetInstalled(mod, true, mod.BackUp);
                             database.Files_AddRecords(mod.Name, installer.LocalFileList.ToArray());
+                            database.Strings_AddRecords(mod.Name, stringList);
                         }
                         else System.Windows.MessageBox.Show("Installation could not be completed!", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
+                ModStrings.WriteModdedTextFile(ModdedStrings);
                 UpdatePreview();
             }
             else

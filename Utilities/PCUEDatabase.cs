@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
 {
@@ -27,6 +28,8 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 Mods_FillTable();
                 Files_CreateTable();
                 Files_FillTable();
+                Strings_CreateTable();
+                Strings_FillTable();
             }
             else
             {
@@ -342,6 +345,93 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 }
             }
             return null;
+        }
+
+        public void Strings_CreateTable()
+        {
+            if (!CheckIfExist("strings"))
+            {
+                StartTransaction();
+
+                sqlCommand = "CREATE TABLE strings(mod TEXT, key TEXT, string TEXT)";
+                ExecuteQuery(sqlCommand);
+
+                CommitTransaction();
+            }
+        }
+
+        public void Strings_FillTable()
+        {
+            if (!CheckIfTableContainsData("strings"))
+            {
+                StartTransaction();
+
+                foreach (var pair in PCUE_ModManager.instance.ModdedStrings)
+                {
+                    sqlCommand = "INSERT INTO strings (mod, key, string) values ('none', '" + pair.Key + "', '" + pair.Value + "')";
+                    command = new SQLiteCommand(sqlCommand, dbConnection);
+                    command.ExecuteNonQuery();
+                }
+
+                CommitTransaction();
+            }
+        }
+
+        public void Strings_AddRecords(string modName, Dictionary<string, string> strings)
+        {
+            StartTransaction();
+
+            List<string> records = new();
+            foreach (var pair in strings)
+            {
+                sqlCommand = "SELECT * FROM strings WHERE key = '" + strings[pair.Key] + "'";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    records.Add((string)reader["key"]);
+                }
+            }
+
+            foreach (var pair in strings)
+            {
+                if (records.Contains(pair.Key))
+                {
+                    sqlCommand = "DELETE FROM strings WHERE key = '" + pair.Key + "'";
+                    command = new SQLiteCommand(sqlCommand, dbConnection);
+                    command.ExecuteNonQuery();
+                }
+
+                sqlCommand = "INSERT INTO strings (mod, key, string) values ('" + modName + "', '" + pair.Key + "', '" + pair.Value + "')";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+            }
+
+            CommitTransaction();
+        }
+
+        public Dictionary<string, string> Strings_TakeRecords(string modName)
+        {
+            StartTransaction();
+
+            sqlCommand = "SELECT * FROM strings WHERE mod = '" + modName + "'";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            var reader = command.ExecuteReader();
+
+            var resultList = new Dictionary<string, string>();
+            while (reader.Read())
+            {
+                resultList.Add((string)reader["key"], (string)reader["string"]);
+            }
+
+            sqlCommand = "DELETE FROM strings WHERE mod = '" + modName + "'";
+            command = new SQLiteCommand(sqlCommand, dbConnection);
+            command.ExecuteNonQuery();
+
+            CommitTransaction();
+
+            return resultList;
         }
     }
 }

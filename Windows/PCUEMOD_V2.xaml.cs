@@ -33,7 +33,7 @@ namespace Pandemonium_Classic_Mod_Manager
         public ObservableCollection<Option> OptionList { get; set; } = new();
 
         public List<string> fileList = new();
-        public int installCount = 0;
+        public Dictionary<string, string> stringList = new();
 
         public PCUEMOD_V2(ModV2 mod)
         {
@@ -43,6 +43,7 @@ namespace Pandemonium_Classic_Mod_Manager
             Title = "PCUEMOD Installer V2: " + Mod.Name;
 
             fileList.AddRange(mod.mainPackageFiles);
+            stringList = new (mod.mainPackageStrings);
 
             if (Mod.Steps.Count != 0)
             {
@@ -92,7 +93,16 @@ namespace Pandemonium_Classic_Mod_Manager
             {
                 // Add selected file packs to list of files to install
                 foreach (var option in checkedOptions)
+                {
                     fileList.AddRange(option.Files);
+                    foreach(var text in option.Strings)
+                    {
+                        if (!stringList.Any(it => it.Key == text.Key))
+                            stringList.Add(text.Key, text.Value);
+                        else
+                            stringList[text.Key] = text.Value;
+                    }
+                }
 
                 if (stepIndex < Mod.Steps.Count - 1)
                 {
@@ -123,9 +133,9 @@ namespace Pandemonium_Classic_Mod_Manager
                 optionListBox.SelectedIndex = optionListBox.Items.IndexOf(option);
                 UpdateMenu(option);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUE_ModManager.ShowError(ex);
             }
         }
 
