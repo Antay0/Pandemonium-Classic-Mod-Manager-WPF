@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandemonium_Classic_Mod_Manager.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ namespace Pandemonium_Classic_Mod_Manager
                 }
                 catch(Exception e)
                 {
-                    PCUE_ModManager.ShowError(e);
+                    PCUEDebug.ShowError(e);
                 }
             }
         }

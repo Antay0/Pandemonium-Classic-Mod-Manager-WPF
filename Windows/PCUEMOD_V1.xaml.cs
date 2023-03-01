@@ -17,6 +17,7 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Diagnostics;
+using Pandemonium_Classic_Mod_Manager.Utilities;
 
 namespace Pandemonium_Classic_Mod_Manager
 {
@@ -68,7 +69,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception e)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUEDebug.ShowError(e);
                 error = true;
                 this.Close();
                 return;
@@ -123,7 +124,7 @@ namespace Pandemonium_Classic_Mod_Manager
                     }
                     else
                     {
-                        PCUE_ModManager.ShowError("Option name is null");
+                        PCUEDebug.ShowError("Option name is null");
                         return;
                     }
 
@@ -142,7 +143,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception e)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUEDebug.ShowError(e);
             }
 
             if (index == installSteps.Length - 1)
@@ -183,7 +184,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception ex)
             {
-                PCUE_ModManager.ShowError(ex);
+                PCUEDebug.ShowError(ex);
             }
         }
 
@@ -197,7 +198,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception ex)
             {
-                PCUE_ModManager.ShowError(ex);
+                PCUEDebug.ShowError(ex);
             }
         }
 

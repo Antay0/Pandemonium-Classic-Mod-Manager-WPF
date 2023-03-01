@@ -57,7 +57,7 @@ namespace Pandemonium_Classic_Mod_Manager
             string? conflict = database.Files_CheckForConflicts(LocalFileList.ToArray());
             if (conflict != null)
             {
-                if (!PCUE_ModManager.ShowErrorOKCancel("Warning! " + conflict + " has conflicting files! Continue?"))
+                if (!PCUEDebug.ShowErrorOKCancel("Warning! " + conflict + " has conflicting files! Continue?"))
                     return;
             }
 
@@ -69,7 +69,7 @@ namespace Pandemonium_Classic_Mod_Manager
                 string newPath = System.IO.Path.Combine(Settings.Default.gameDataFolder, localPath);
                 if (!File.Exists(newPath))
                 {
-                    PCUE_ModManager.ShowError("The image file: '" + file + "' does not exist!");
+                    PCUEDebug.ShowError("The image file: '" + file + "' does not exist!");
                     return;
                 }
 
@@ -112,7 +112,7 @@ namespace Pandemonium_Classic_Mod_Manager
 
                     if (!File.Exists(oldPath))
                     {
-                        if (!PCUE_ModManager.ShowErrorOKCancel("File Not Found: '" + oldPath + "'")) 
+                        if (!PCUEDebug.ShowErrorOKCancel("File Not Found: '" + oldPath + "'")) 
                             return;
                     }
 

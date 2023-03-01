@@ -22,7 +22,7 @@ namespace Pandemonium_Classic_Mod_Manager.Utilities
                 int i = file.IndexOf("StreamingAssets");
                 if (i == -1)
                 {
-                    PCUE_ModManager.ShowError("ERROR: substring '\\StreamingAssets' not found in file: " + file);
+                    PCUEDebug.ShowError("ERROR: substring '\\StreamingAssets' not found in file: " + file);
                 }
                 else
                 {

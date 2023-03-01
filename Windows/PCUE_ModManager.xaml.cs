@@ -17,6 +17,7 @@ using Pandemonium_Classic_Mod_Manager.Properties;
 using Pandemonium_Classic_Mod_Manager.SQLiteDataBase;
 using System.Diagnostics;
 using System.Reflection;
+using Pandemonium_Classic_Mod_Manager.Utilities;
 
 namespace Pandemonium_Classic_Mod_Manager
 {
@@ -203,12 +204,12 @@ namespace Pandemonium_Classic_Mod_Manager
                             string mod_xml = ((ModV1)mod).xmlPath;
                             if (string.IsNullOrEmpty(mod_xml))
                             {
-                                ShowError("String 'toInstall' is NULL or empty");
+                                PCUEDebug.ShowError("String 'toInstall' is NULL or empty");
                                 return;
                             }
                             else if (!System.IO.File.Exists(mod_xml))
                             {
-                                ShowError("'mod.xml' is missing");
+                                PCUEDebug.ShowError("'mod.xml' is missing");
                                 return;
                             }
 
@@ -326,32 +327,8 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception ex)
             {
-                ShowError(ex);
+                PCUEDebug.ShowError(ex);
             }
-        }
-
-        public static void ShowError(Exception e, string message = "")
-        {
-            System.Windows.MessageBox.Show((message != "" ? message + "\n\n" : "") 
-                + e.Message + "\n --------- \n" + e.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        public static void ShowError(string message)
-        {
-            System.Windows.MessageBox.Show(message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        public static bool ShowErrorOKCancel(Exception e, string message = "")
-        {
-            var result =  System.Windows.MessageBox.Show((message != "" ? message + "\n\n" : "")
-                + e.Message + "\n --------- \n" + e.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            return result == MessageBoxResult.OK ? true : false;
-        }
-
-        public static bool ShowErrorOKCancel(string message)
-        {
-            var result = System.Windows.MessageBox.Show(message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            return result == MessageBoxResult.OK ? true : false;
         }
     }
 }

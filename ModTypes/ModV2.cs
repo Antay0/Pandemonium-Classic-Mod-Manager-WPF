@@ -1,4 +1,5 @@
 ﻿using Pandemonium_Classic_Mod_Manager.Properties;
+using Pandemonium_Classic_Mod_Manager.Utilities;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices.ActiveDirectory;
@@ -34,7 +35,7 @@ namespace Pandemonium_Classic_Mod_Manager
 
                 if (!File.Exists(xml))
                 {
-                    PCUE_ModManager.ShowError("XML did not exist!");
+                    PCUEDebug.ShowError("XML did not exist!");
                     return null;
                 }
 
@@ -81,7 +82,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch(Exception e)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUEDebug.ShowError(e);
             }
             return null;
         }
@@ -186,7 +187,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception e)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUEDebug.ShowError(e);
             }
         }
 
@@ -217,7 +218,7 @@ namespace Pandemonium_Classic_Mod_Manager
             }
             catch (Exception e)
             {
-                PCUE_ModManager.ShowError(e);
+                PCUEDebug.ShowError(e);
                 return null;
             }
         }
