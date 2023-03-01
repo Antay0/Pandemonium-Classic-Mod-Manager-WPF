@@ -33,7 +33,7 @@ namespace Pandemonium_Classic_Mod_Manager
         public ObservableCollection<Option> OptionList { get; set; } = new();
 
         public List<string> fileList = new();
-        public Dictionary<string, string> stringList = new();
+        public Dictionary<string, Dictionary<string, string>> stringList = new();
 
         public PCUEMOD_V2(ModV2 mod)
         {

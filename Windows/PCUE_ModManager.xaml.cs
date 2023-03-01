@@ -31,7 +31,7 @@ namespace Pandemonium_Classic_Mod_Manager
 
         public ObservableCollection<Mod> Mods { get; set; } = new();
 
-        public Dictionary<string, string> ModdedStrings = new();
+        public Dictionary<string, Dictionary<string, string>> ModdedStrings = new();
 
         public PCUE_Database database;
 
@@ -59,32 +59,8 @@ namespace Pandemonium_Classic_Mod_Manager
 
             database = new PCUE_Database();
 
-            /*ModV2 mod = new()
-            {
-                Name = "Vampire MILFs - ModV2 Test",
-                Author = "Antay",
-                Description = "STUPID SHIT BOOO HOOOOB",
-                MainPackage = "0Main",
-                Steps = new()
-                {
-                    new(){name = "Talia Selection", onlyOne = true, required = true,
-                        options = new()
-                        {
-                            new Option(){ name = "Confident", description = "Fuck", folder = "Shit1", image = "confident.png"},
-                            new Option(){ name = "Horny", description = "Shit", folder = "Butt2", image = "horny.png"}
-                        }
-                        },
-                    new(){name = "Lotta Selection", onlyOne = true, required = true,
-                        options = new()
-                        {
-                            new Option(){ name = "Confident", description = "Fuck", folder = "Shit3", image = "confident.png"},
-                            new Option(){ name = "Wanker", description = "eat", folder = "Dick4", image = "fork.png"},
-                            new Option(){ name = "Horny", description = "Shit", folder = "Butt5", image = "horny.png"}
-                        }
-                    }
-                }
-            };
-            ModV2.WriteModV2XML(mod); */
+            ModV2.WriteModV2XML();
+            ModStrings.WriteTextXML();
 
             ModList_Update();
         }
@@ -222,7 +198,7 @@ namespace Pandemonium_Classic_Mod_Manager
                     if (mod != null)
                     {
                         List<string> fileList = new();
-                        Dictionary<string, string> stringList = new();
+                        Dictionary<string, Dictionary<string, string>> stringList = new();
 
                         if (mod is ModV1) // =========== PCUEMOD_V1
                         {
@@ -276,12 +252,23 @@ namespace Pandemonium_Classic_Mod_Manager
                             mod.Installed = "+";
                             mod.BackUp = Settings.Default.backup;
 
-                            foreach (var text in stringList)
+                            foreach (var section in stringList)
                             {
-                                if (!ModdedStrings.Any(it => it.Key == text.Key))
-                                    ModdedStrings.Add(text.Key, text.Value);
-                                else
-                                    ModdedStrings[text.Key] = text.Value;
+                                if (!ModdedStrings.ContainsKey(section.Key))
+                                {
+                                    ModdedStrings.Add(section.Key, new());
+                                }
+                                foreach (var entry in section.Value)
+                                {
+                                    if (!ModdedStrings[section.Key].ContainsKey(entry.Key))
+                                    {
+                                        ModdedStrings[section.Key].Add(entry.Key, entry.Value);
+                                    }
+                                    else
+                                    {
+                                        ModdedStrings[section.Key][entry.Key] = entry.Value;
+                                    }
+                                }
                             }
                             database.Mods_SetInstalled(mod, true, mod.BackUp);
                             database.Files_AddRecords(mod.Name, installer.LocalFileList.ToArray());

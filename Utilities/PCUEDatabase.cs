@@ -59,7 +59,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
 
         public bool CheckIfExist(string tableName)
         {
-            command.CommandText = "SELECT name FROM sqlite_master WHERE name='" + tableName + "'";
+            command.CommandText = "SELECT name FROM sqlite_master WHERE name=\"" + tableName + "\"";
             var result = command.ExecuteScalar();
 
             return result != null && result.ToString() == tableName;
@@ -115,7 +115,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
 
                 foreach (Mod mod in PCUE_ModManager.instance.Mods)
                 {
-                    sqlCommand = "INSERT INTO mods(name, installed, backup) values ('" + mod.Name + "', 0, 0)";
+                    sqlCommand = "INSERT INTO mods(name, installed, backup) values (\"" + mod.Name + "\", 0, 0)";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     ExecuteQuery(sqlCommand);
                 }
@@ -128,7 +128,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             var modList = PCUE_ModManager.instance.Mods;
 
-            sqlCommand = "SELECT * FROM mods WHERE installed = '1'";
+            sqlCommand = "SELECT * FROM mods WHERE installed = \"1\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             var reader = command.ExecuteReader();
 
@@ -173,7 +173,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 {
                     if ((int)reader["installed"] == 0)
                     {
-                        sqlCommand = "DELETE FROM mods WHERE name = '" + modName + "'";
+                        sqlCommand = "DELETE FROM mods WHERE name = \"" + modName + "\"";
                         command = new SQLiteCommand(sqlCommand, dbConnection);
                         command.ExecuteNonQuery();
                     }
@@ -183,13 +183,13 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             // Add New Records
             foreach (Mod mod in PCUE_ModManager.instance.Mods)
             {
-                sqlCommand = "SELECT COUNT(name) FROM mods WHERE name = '" + mod.Name + "'";
+                sqlCommand = "SELECT COUNT(name) FROM mods WHERE name = \"" + mod.Name + "\"";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 var result = Convert.ToInt32(command.ExecuteScalar());
 
                 if (result == 0)
                 {
-                    sqlCommand = "INSERT INTO mods (name, installed, backup) values ('" + mod.Name + "', 0, 0)";
+                    sqlCommand = "INSERT INTO mods (name, installed, backup) values (\"" + mod.Name + "\", 0, 0)";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
@@ -204,23 +204,23 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
 
             if (installed)
             {
-                sqlCommand = "UPDATE mods SET installed = 1 WHERE name = '" + mod.Name + "'";
+                sqlCommand = "UPDATE mods SET installed = 1 WHERE name = \"" + mod.Name + "\"";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 command.ExecuteNonQuery();
                 if (backup)
                 {
-                    sqlCommand = "UPDATE mods SET backup = 1 WHERE name = '" + mod.Name + "'";
+                    sqlCommand = "UPDATE mods SET backup = 1 WHERE name = \"" + mod.Name + "\"";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
             }
             else if (!installed)
             {
-                sqlCommand = "UPDATE mods SET installed = 0 WHERE name = '" + mod.Name + "'";
+                sqlCommand = "UPDATE mods SET installed = 0 WHERE name = \"" + mod.Name + "\"";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 command.ExecuteNonQuery();
 
-                sqlCommand = "UPDATE mods SET backup = 0 WHERE name = '" + mod.Name + "'";
+                sqlCommand = "UPDATE mods SET backup = 0 WHERE name = \"" + mod.Name + "\"";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 command.ExecuteNonQuery();
             }
@@ -251,7 +251,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
 
                 foreach (string file in files)
                 {
-                    sqlCommand = "INSERT INTO files (mod, path) values ('none', '" + file + "')";
+                    sqlCommand = "INSERT INTO files (mod, path) values (\"none\", \"" + file + "\")";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
@@ -267,7 +267,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             List<string> records = new();
             for (int i = 0; i < files.Length; i++)
             {
-                sqlCommand = "SELECT * FROM files WHERE path = '" + files[i] + "'";
+                sqlCommand = "SELECT * FROM files WHERE path = \"" + files[i] + "\"";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 var reader = command.ExecuteReader();
 
@@ -281,12 +281,12 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             {
                 if (records.Contains(file))
                 {
-                    sqlCommand = "DELETE FROM files WHERE path = '" + file + "'";
+                    sqlCommand = "DELETE FROM files WHERE path = \"" + file + "\"";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
 
-                sqlCommand = "INSERT INTO files (mod, path) values ('" + modName + "', '" + file + "')";
+                sqlCommand = "INSERT INTO files (mod, path) values (\"" + modName + "\", \"" + file + "\")";
                 command = new SQLiteCommand(sqlCommand, dbConnection);
                 command.ExecuteNonQuery();
             }
@@ -304,7 +304,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         {
             StartTransaction();
 
-            sqlCommand = "SELECT * FROM files WHERE mod = '" + modName + "'";
+            sqlCommand = "SELECT * FROM files WHERE mod = \"" + modName + "\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             var reader = command.ExecuteReader();
 
@@ -314,7 +314,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 resultList.Add((string)reader["path"]);
             }
 
-            sqlCommand = "DELETE FROM files WHERE mod = '" + modName + "'";
+            sqlCommand = "DELETE FROM files WHERE mod = \"" + modName + "\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             command.ExecuteNonQuery();
 
@@ -353,7 +353,7 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             {
                 StartTransaction();
 
-                sqlCommand = "CREATE TABLE strings(mod TEXT, key TEXT, string TEXT)";
+                sqlCommand = "CREATE TABLE strings(mod TEXT, section TEXT, key TEXT, string TEXT)";
                 ExecuteQuery(sqlCommand);
 
                 CommitTransaction();
@@ -366,66 +366,60 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             {
                 StartTransaction();
 
-                foreach (var pair in PCUE_ModManager.instance.ModdedStrings)
+                foreach (var section in PCUE_ModManager.instance.ModdedStrings)
                 {
-                    sqlCommand = "INSERT INTO strings (mod, key, string) values ('none', '" + pair.Key + "', '" + pair.Value + "')";
-                    command = new SQLiteCommand(sqlCommand, dbConnection);
-                    command.ExecuteNonQuery();
+                    foreach (var entry in section.Value)
+                    {
+                        sqlCommand = "INSERT INTO strings (mod, section, key, string) values (\"none\", \"" + section.Key + "\", \"" + entry.Key + "\", \"" + entry.Value + "\")";
+                        command = new SQLiteCommand(sqlCommand, dbConnection);
+                        command.ExecuteNonQuery();
+                    }
                 }
 
                 CommitTransaction();
             }
         }
 
-        public void Strings_AddRecords(string modName, Dictionary<string, string> strings)
+        public void Strings_AddRecords(string modName, Dictionary<string, Dictionary<string, string>> strings)
         {
             StartTransaction();
 
-            List<string> records = new();
-            foreach (var pair in strings)
+            foreach (var section in strings)
             {
-                sqlCommand = "SELECT * FROM strings WHERE key = '" + strings[pair.Key] + "'";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                var reader = command.ExecuteReader();
-
-                while (reader.Read())
+                foreach (var entry in section.Value)
                 {
-                    records.Add((string)reader["key"]);
-                }
-            }
+                    sqlCommand = "DELETE FROM strings WHERE section = \"" + section.Key + "\"" +
+                        " AND key = \"" + entry.Key + "\"";
+                    command = new SQLiteCommand(sqlCommand, dbConnection);
+                    command.ExecuteNonQuery();
 
-            foreach (var pair in strings)
-            {
-                if (records.Contains(pair.Key))
-                {
-                    sqlCommand = "DELETE FROM strings WHERE key = '" + pair.Key + "'";
+                    sqlCommand = "INSERT INTO strings (mod, section, key, string) values (\"" + modName + "\", \"" + section.Key + "\", \"" + entry.Key + "\", \"" + entry.Value + "\")";
                     command = new SQLiteCommand(sqlCommand, dbConnection);
                     command.ExecuteNonQuery();
                 }
-
-                sqlCommand = "INSERT INTO strings (mod, key, string) values ('" + modName + "', '" + pair.Key + "', '" + pair.Value + "')";
-                command = new SQLiteCommand(sqlCommand, dbConnection);
-                command.ExecuteNonQuery();
             }
 
             CommitTransaction();
         }
 
-        public Dictionary<string, string> Strings_TakeRecords(string modName)
+        public Dictionary<string, Dictionary<string, string>> Strings_TakeRecords(string modName)
         {
             StartTransaction();
 
-            sqlCommand = "SELECT * FROM strings WHERE mod = '" + modName + "'";
+            sqlCommand = "SELECT * FROM strings WHERE mod = \"" + modName + "\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             var reader = command.ExecuteReader();
 
-            var resultList = new Dictionary<string, string>();
+            var resultList = new Dictionary<string, Dictionary<string, string>>();
             while (reader.Read())
             {
-                resultList.Add((string)reader["key"], (string)reader["string"]);
+                var section = (string)reader["section"];
+                var key = (string)reader["key"];
+                var text = (string)reader["text"];
+                resultList[section][key] = text;
             }
 
-            sqlCommand = "DELETE FROM strings WHERE mod = '" + modName + "'";
+            sqlCommand = "DELETE FROM strings WHERE mod = \"" + modName + "\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             command.ExecuteNonQuery();
 

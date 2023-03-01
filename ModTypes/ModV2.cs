@@ -13,15 +13,15 @@ using System.Xml.Serialization;
 
 namespace Pandemonium_Classic_Mod_Manager
 {
-    public class ModV2 : Mod
+    [XmlRoot("PCUEMODV2")] public class ModV2 : Mod
     {
         [XmlIgnore] public string modFolder = "";
 
         public string MainPackage = "";
         [XmlIgnore] public List<string>mainPackageFiles = new();
-        [XmlIgnore] public Dictionary<string, string> mainPackageStrings = new();
+        [XmlIgnore] public Dictionary<string, Dictionary<string, string>> mainPackageStrings = new();
 
-        public List<Step> Steps = new();
+        [XmlElement("InstallSection")] public List<Step> Steps = new();
 
         public ModV2() { }
 
@@ -86,11 +86,41 @@ namespace Pandemonium_Classic_Mod_Manager
             return null;
         }
 
-        public static void WriteModV2XML(ModV2 mod)
+        /// <summary>
+        /// Writes an xml for testing purposes
+        /// </summary>
+        /// <param name="mod"></param>
+        public static void WriteModV2XML()
         {
+            ModV2 mod = new()
+            {
+                Name = "Vampire MILFs - ModV2 Test",
+                Author = "Antay",
+                Description = "STUPID SHIT BOOO HOOOOB",
+                MainPackage = "0Main",
+                Steps = new()
+                {
+                    new(){name = "Talia Selection", onlyOne = true, required = true,
+                        Options = new()
+                        {
+                            new Option(){ name = "Confident", description = "Fuck", folder = "Shit1", image = "confident.png"},
+                            new Option(){ name = "Horny", description = "Shit", folder = "Butt2", image = "horny.png"}
+                        }
+                        },
+                    new(){name = "Lotta Selection", onlyOne = true, required = true,
+                        Options = new()
+                        {
+                            new Option(){ name = "Confident", description = "Fuck", folder = "Shit3", image = "confident.png"},
+                            new Option(){ name = "Wanker", description = "eat", folder = "Dick4", image = "fork.png"},
+                            new Option(){ name = "Horny", description = "Shit", folder = "Butt5", image = "horny.png"}
+                        }
+                    }
+                }
+            };
+
             XmlSerializer serializer = new XmlSerializer(typeof(ModV2));
 
-            using (FileStream file = File.Create(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test.xml")))
+            using (FileStream file = File.Create(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "testModV2.xml")))
             {
                 serializer.Serialize(file, mod);
             }
@@ -103,7 +133,7 @@ namespace Pandemonium_Classic_Mod_Manager
         [XmlAttribute] public bool onlyOne { get; set; } = false;
         [XmlAttribute] public bool required { get; set; } = false;
 
-        public List<Option> Options = new();
+        [XmlElement("Option")] public List<Option> Options = new();
     }
 
     public class Option
@@ -112,7 +142,7 @@ namespace Pandemonium_Classic_Mod_Manager
         public string description = "", folder = "", image = "";
 
         [XmlIgnore] public List<string> Files = new();
-        [XmlIgnore] public Dictionary<string, string> Strings = new();
+        [XmlIgnore] public Dictionary<string, Dictionary<string, string>> Strings = new();
         [XmlIgnore] public BitmapImage? loadedImage;
         [XmlIgnore] public bool IsChecked { get; set; } = false;
 
@@ -120,36 +150,13 @@ namespace Pandemonium_Classic_Mod_Manager
     }
 
 
-
-
-    public class ModStrings
+    [XmlRoot("ModStrings")] public class ModStrings
     {
-        public List<Entry> Strings = new();
+        [XmlElement("Section")] public List<StringSection> AllStrings = new();
 
         public ModStrings() { }
 
-        public static Dictionary<string, string> LoadModdedText(string file)
-        {
-            try
-            {
-                var dict = new Dictionary<string, string>();
-                ModStrings? loadedStrings;
-                var reader = new XmlSerializer(typeof(ModStrings));
-                using (var stream = new StreamReader(file))
-                {
-                    loadedStrings = reader.Deserialize(stream) as ModStrings;
-                }
-                dict = loadedStrings.Strings.ToDictionary(t => t.Key, t => t.Text);
-                return dict;
-            }
-            catch (Exception e)
-            {
-                PCUE_ModManager.ShowError(e);
-                return null;
-            }
-        }
-
-        public static void WriteModdedTextFile(Dictionary<string, string> strings)
+        public static void WriteModdedTextFile(Dictionary<string, Dictionary<string, string>> strings)
         {
             try
             {
@@ -163,13 +170,17 @@ namespace Pandemonium_Classic_Mod_Manager
                     writer.WriteStartDocument();
                     writer.WriteStartElement("AllStrings");
 
-                    foreach (var pair in strings)
+                    foreach (var section in strings)
                     {
-                        writer.WriteStartElement(pair.Key);
-                        writer.WriteString(pair.Value);
+                        writer.WriteStartElement(section.Key);
+                        foreach (var entry in section.Value)
+                        {
+                            writer.WriteStartElement(entry.Key);
+                            writer.WriteString(entry.Value);
+                            writer.WriteEndElement();
+                        }
                         writer.WriteEndElement();
                     }
-
                     writer.WriteEndDocument();
                 }
             }
@@ -178,13 +189,114 @@ namespace Pandemonium_Classic_Mod_Manager
                 PCUE_ModManager.ShowError(e);
             }
         }
+
+        public static Dictionary<string, Dictionary<string, string>> LoadModdedText(string file)
+        {
+            try
+            {
+                var dict = new Dictionary<string, Dictionary<string, string>>();
+                var pair = new Dictionary<string, string>();
+                ModStrings? loadedStrings;
+                var reader = new XmlSerializer(typeof(ModStrings));
+                using (var stream = new StreamReader(file))
+                {
+                    loadedStrings = reader.Deserialize(stream) as ModStrings;
+                }
+                foreach (var section in loadedStrings.AllStrings)
+                {
+                    if (!dict.ContainsKey(section.Name))
+                    {
+                        dict.Add(section.Name, new());
+                    }
+                    foreach (var entry in section.Strings)
+                    {
+                        if (!dict[section.Name].ContainsKey(entry.Key))
+                        {
+                            dict[section.Name].Add(entry.Key, entry.Text);
+                        }
+                        else
+                        {
+                            dict[section.Name][entry.Key] = entry.Text;
+                        }
+                    }
+                }
+                return dict;
+            }
+            catch (Exception e)
+            {
+                PCUE_ModManager.ShowError(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Writes an xml for testing purposes
+        /// </summary>
+        /// <param name="mod"></param>
+        public static void WriteTextXML()
+        {
+            ModStrings modStrings = new ModStrings()
+            {
+                AllStrings = new()
+                {
+                    new()
+                    {
+                        Name = "undineStrings",
+                        Strings = new()
+                        {
+                            new()
+                            {
+                                Key = "TRANSFORM_PLAYER_1",
+                                Text = "I am testing this system"
+                            },
+                            new()
+                            {
+                                Key = "TRANSFORM_PLAYER_2",
+                                Text = "{TransformerName} disrobes you gently, and begins rubbing your back, yes, {TransformerName}. She gradually moves down, rubbing below your breasts and bottom, and above your waist as well with sensual skill. A cool feeling of relaxation spreads wherever she touches you. You don't need to worry any more."
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        Name = "bitchStrings",
+                        Strings = new()
+                        {
+                            new()
+                            {
+                                Key = "TRANSFORM_NPC_1",
+                                Text = "SQUEEEEEE"
+                            },
+                            new()
+                            {
+                                Key = "TRANSFORM_NPC_2",
+                                Text = "BAAAASF"
+                            }
+                        }
+                    }
+                }
+            };
+
+            XmlSerializer serializer = new XmlSerializer(typeof(ModStrings));
+
+            using (FileStream file = File.Create(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "testText.xml")))
+            {
+                serializer.Serialize(file, modStrings);
+            }
+        }
     }
 
-    public class Entry
+    public class StringSection
     {
-        public string Key = "";
-        public string Text = "";
+        [XmlAttribute("name")] public string Name = "";
+        [XmlElement("String")] public List<StringEntry> Strings = new();
+    }
 
-        public Entry() { }
+
+    public class StringEntry
+    {
+        [XmlAttribute("key")] public string Key = "";
+        [XmlAttribute("text")] public string Text = "";
+
+        public StringEntry() { }
     }
 }
