@@ -59,9 +59,7 @@ namespace Pandemonium_Classic_Mod_Manager
 
             database = new PCUE_Database();
 
-            ModV2.WriteModV2XML();
-            ModStrings.WriteTextXML();
-
+            ModdedStrings = database.Strings_GetAllRecords();
             ModList_Update();
         }
 
@@ -260,14 +258,7 @@ namespace Pandemonium_Classic_Mod_Manager
                                 }
                                 foreach (var entry in section.Value)
                                 {
-                                    if (!ModdedStrings[section.Key].ContainsKey(entry.Key))
-                                    {
-                                        ModdedStrings[section.Key].Add(entry.Key, entry.Value);
-                                    }
-                                    else
-                                    {
-                                        ModdedStrings[section.Key][entry.Key] = entry.Value;
-                                    }
+                                    ModdedStrings[section.Key][entry.Key] = entry.Value;
                                 }
                             }
                             database.Mods_SetInstalled(mod, true, mod.BackUp);

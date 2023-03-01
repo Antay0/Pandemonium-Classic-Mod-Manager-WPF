@@ -300,10 +300,8 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
         /// <param name="modName"></param>
         /// <returns></returns>
 
-        public string[] Files_TakeRecords(string modName)
+        public string[] Files_TakeRecords(string modName, bool remove = false)
         {
-            StartTransaction();
-
             sqlCommand = "SELECT * FROM files WHERE mod = \"" + modName + "\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             var reader = command.ExecuteReader();
@@ -314,12 +312,16 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
                 resultList.Add((string)reader["path"]);
             }
 
-            sqlCommand = "DELETE FROM files WHERE mod = \"" + modName + "\"";
-            command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            if (remove)
+            {
+                StartTransaction();
 
-            CommitTransaction();
+                sqlCommand = "DELETE FROM files WHERE mod = \"" + modName + "\"";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
 
+                CommitTransaction();
+            }
             return resultList.ToArray();
         }
 
@@ -402,10 +404,8 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             CommitTransaction();
         }
 
-        public Dictionary<string, Dictionary<string, string>> Strings_TakeRecords(string modName)
+        public Dictionary<string, Dictionary<string, string>> Strings_GetRecords(string modName, bool remove = false)
         {
-            StartTransaction();
-
             sqlCommand = "SELECT * FROM strings WHERE mod = \"" + modName + "\"";
             command = new SQLiteCommand(sqlCommand, dbConnection);
             var reader = command.ExecuteReader();
@@ -415,16 +415,41 @@ namespace Pandemonium_Classic_Mod_Manager.SQLiteDataBase
             {
                 var section = (string)reader["section"];
                 var key = (string)reader["key"];
-                var text = (string)reader["text"];
+                var text = (string)reader["string"];
+                if (!resultList.ContainsKey(section))
+                    resultList.Add(section, new());
                 resultList[section][key] = text;
             }
 
-            sqlCommand = "DELETE FROM strings WHERE mod = \"" + modName + "\"";
+            if (remove)
+            {
+                StartTransaction();
+
+                sqlCommand = "DELETE FROM strings WHERE mod = \"" + modName + "\"";
+                command = new SQLiteCommand(sqlCommand, dbConnection);
+                command.ExecuteNonQuery();
+
+                CommitTransaction();
+            }
+            return resultList;
+        }
+
+        public Dictionary<string, Dictionary<string, string>> Strings_GetAllRecords()
+        {
+            sqlCommand = "SELECT * FROM strings";
             command = new SQLiteCommand(sqlCommand, dbConnection);
-            command.ExecuteNonQuery();
+            var reader = command.ExecuteReader();
 
-            CommitTransaction();
-
+            var resultList = new Dictionary<string, Dictionary<string, string>>();
+            while (reader.Read())
+            {
+                var section = (string)reader["section"];
+                var key = (string)reader["key"];
+                var text = (string)reader["string"];
+                if (!resultList.ContainsKey(section))
+                    resultList.Add(section, new());
+                resultList[section][key] = text;
+            }
             return resultList;
         }
     }

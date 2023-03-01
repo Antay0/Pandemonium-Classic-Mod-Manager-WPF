@@ -101,8 +101,8 @@ namespace Pandemonium_Classic_Mod_Manager
 
             if (_mod != null && _mod.Installed != "" && _mod.BackUp)
             {
-                string[] fileList = database.Files_TakeRecords(_mod.Name);
-                var stringList = database.Strings_TakeRecords(_mod.Name);
+                string[] fileList = database.Files_TakeRecords(_mod.Name, true);
+                var stringList = database.Strings_GetRecords(_mod.Name, true);
                 int index = 0, total = fileList.Count();
 
                 foreach (var file in fileList)
@@ -126,9 +126,19 @@ namespace Pandemonium_Classic_Mod_Manager
 
                     await Task.Delay(1);
                 }
-                foreach (var entry in stringList)
+                foreach (var section in stringList)
                 {
-                    PCUE_ModManager.instance.ModdedStrings.Remove(entry.Key);
+                    if (section.Value.Values.Count > 0)
+                    {
+                        foreach (var entry in section.Value)
+                        {
+                            PCUE_ModManager.instance.ModdedStrings[section.Key].Remove(entry.Key);
+                        }
+                    }
+                    else
+                    {
+                        PCUE_ModManager.instance.ModdedStrings.Remove(section.Key);
+                    }
                 }
                 ModStrings.WriteModdedTextFile(PCUE_ModManager.instance.ModdedStrings);
 

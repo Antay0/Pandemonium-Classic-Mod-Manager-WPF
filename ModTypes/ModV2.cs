@@ -210,14 +210,7 @@ namespace Pandemonium_Classic_Mod_Manager
                     }
                     foreach (var entry in section.Strings)
                     {
-                        if (!dict[section.Name].ContainsKey(entry.Key))
-                        {
-                            dict[section.Name].Add(entry.Key, entry.Text);
-                        }
-                        else
-                        {
-                            dict[section.Name][entry.Key] = entry.Text;
-                        }
+                        dict[section.Name][entry.Key] = entry.Text;
                     }
                 }
                 return dict;
